@@ -44,6 +44,230 @@ body {
 }
 
 /* ═══════════════════════════════════════════
+   LOGIN OVERLAY
+═══════════════════════════════════════════ */
+#login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+.login-left {
+  flex: 1;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.login-left-inner {
+  width: 90%;
+  max-width: 480px;
+  height: 70%;
+  min-height: 320px;
+  max-height: 520px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--bg3);
+}
+
+.login-left-inner .img-placeholder-icon {
+  font-size: 54px;
+  opacity: .35;
+}
+
+.login-left-inner .img-placeholder-label {
+  font-size: 13px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 240px;
+}
+
+/* Cuando haya imagen real */
+.login-left-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius-lg) - 2px);
+  display: block;
+}
+
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-header {
+  margin-bottom: 36px;
+}
+
+.login-header .login-cross {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.login-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.login-header .login-sub {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.login-welcome {
+  background: rgba(56,139,253,.08);
+  border: 1px solid rgba(56,139,253,.25);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--accent2);
+  line-height: 1.5;
+}
+
+.login-form { display: flex; flex-direction: column; gap: 18px; }
+
+.login-field { display: flex; flex-direction: column; gap: 6px; }
+
+.login-field label {
+  font-size: 11px;
+  color: var(--text2);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.login-field input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+
+.login-field input:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(56,139,253,.15);
+}
+
+.login-error {
+  background: rgba(248,81,73,.1);
+  border: 1px solid rgba(248,81,73,.3);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--red);
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-error.show { display: flex; }
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  letter-spacing: .02em;
+  margin-top: 4px;
+}
+
+.login-btn:hover  { background: var(--accent2); }
+.login-btn:active { transform: scale(.98); }
+
+.login-footer-note {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* Shake animation for wrong credentials */
+@keyframes shake {
+  0%,100%{ transform: translateX(0); }
+  20%    { transform: translateX(-8px); }
+  40%    { transform: translateX(8px); }
+  60%    { transform: translateX(-5px); }
+  80%    { transform: translateX(5px); }
+}
+.shake { animation: shake .4s ease; }
+
+/* Fade-out overlay */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+#login-overlay.fade-out {
+  animation: fadeOut .45s ease forwards;
+}
+
+/* Responsive login */
+@media (max-width: 768px) {
+  #login-overlay { flex-direction: column; }
+  .login-left {
+    flex: none;
+    height: 220px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .login-left-inner {
+    width: 85%;
+    height: 160px;
+    min-height: unset;
+    max-height: unset;
+  }
+  .login-left-inner .img-placeholder-icon { font-size: 36px; }
+  .login-right { padding: 28px 20px; }
+  .login-header h1 { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .login-left { height: 160px; }
+  .login-left-inner { height: 120px; }
+}
+
+/* ═══════════════════════════════════════════
    SIDEBAR
 ═══════════════════════════════════════════ */
 .sidebar {
@@ -458,9 +682,106 @@ td { padding: 11px 14px; vertical-align: middle; }
   background: var(--border);
   margin: 20px 0;
 }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE SIDEBAR (mobile)
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: unset;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+  .main { margin-left: 0; }
+  .sidebar-logo { padding: 14px 16px; border-bottom: none; border-right: 1px solid var(--border); }
+  nav { display: flex; flex-direction: row; overflow-x: auto; }
+  .nav-section { display: none; }
+  .nav-item { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; padding: 14px 12px; }
+  .nav-item.active { border-bottom-color: var(--accent2); border-left-color: transparent; }
+  .sidebar-footer { display: none; }
+  body { flex-direction: column; }
+}
 </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN OVERLAY
+══════════════════════════════════════════ -->
+<div id="login-overlay">
+
+  <!-- Lado izquierdo: espacio para imagen -->
+  <div class="login-left">
+    <div class="login-left-inner" id="login-img-container">
+      <!-- Si deseas mostrar una imagen, reemplaza este bloque por:
+           <img src="/static/tu-imagen.jpg" alt="Hospital del Tunal" />
+           o bien coloca aquí el tag <img> directamente -->
+      <div class="img-placeholder-icon">🏥</div>
+      <div class="img-placeholder-label">
+        Espacio reservado para imagen institucional<br/>
+        <small style="font-size:11px;opacity:.6">(reemplaza este bloque con tu &lt;img&gt;)</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lado derecho: formulario de acceso -->
+  <div class="login-right">
+    <div class="login-box">
+
+      <div class="login-header">
+        <span class="login-cross">🏥</span>
+        <h1>Hospital del Tunal</h1>
+        <span class="login-sub">Sistema de Gestión de Urgencias · Bogotá</span>
+      </div>
+
+      <div class="login-welcome">
+        👋 Bienvenido al sistema de urgencias.<br/>
+        Por favor ingrese sus credenciales para continuar.
+      </div>
+
+      <div class="login-form" id="login-form">
+        <div class="login-field">
+          <label for="login-user">Usuario</label>
+          <input
+            id="login-user"
+            type="text"
+            placeholder="Ingrese su usuario"
+            autocomplete="username"
+            spellcheck="false"
+          />
+        </div>
+
+        <div class="login-field">
+          <label for="login-pass">Contraseña</label>
+          <input
+            id="login-pass"
+            type="password"
+            placeholder="Ingrese su contraseña"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <div class="login-error" id="login-error">
+          <span>⚠️</span>
+          <span id="login-error-msg">Usuario o contraseña incorrectos.</span>
+        </div>
+
+        <button class="login-btn" id="login-btn" onclick="intentarLogin()">
+          Iniciar sesión
+        </button>
+      </div>
+
+      <div class="login-footer-note">
+        Sistema restringido al personal autorizado del Hospital del Tunal.<br/>
+        Solo urgencias — operación 24 horas.
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════
      SIDEBAR
@@ -535,7 +856,6 @@ td { padding: 11px 14px; vertical-align: middle; }
       </div>
 
       <div class="two-col">
-        <!-- Cola rápida -->
         <div class="card">
           <div class="card-header">
             <h3>⏳ Próximos en cola</h3>
@@ -551,7 +871,6 @@ td { padding: 11px 14px; vertical-align: middle; }
           </div>
         </div>
 
-        <!-- En atención -->
         <div class="card">
           <div class="card-header"><h3>🩺 En atención ahora</h3></div>
           <div class="card-body" style="padding:0">
@@ -569,7 +888,6 @@ td { padding: 11px 14px; vertical-align: middle; }
     <!-- ── DOCTORES ─────────────────────────────── -->
     <div class="section" id="sec-doctores">
       <div class="two-col">
-        <!-- Formulario -->
         <div class="card">
           <div class="card-header"><h3>➕ Agregar Doctor</h3></div>
           <div class="card-body">
@@ -584,7 +902,6 @@ td { padding: 11px 14px; vertical-align: middle; }
           </div>
         </div>
 
-        <!-- Lista doctores -->
         <div class="card">
           <div class="card-header"><h3>👨‍⚕️ Doctores Registrados</h3></div>
           <div class="card-body">
@@ -641,7 +958,6 @@ td { padding: 11px 14px; vertical-align: middle; }
                   <option value="">Seleccionar emergencia...</option>
                 </select>
               </div>
-              <!-- Preview triage -->
               <div id="triage-preview" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
                 <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Vista previa</div>
                 <div id="triage-preview-badge" style="margin-bottom:6px"></div>
@@ -654,7 +970,6 @@ td { padding: 11px 14px; vertical-align: middle; }
           </div>
         </div>
 
-        <!-- Leyenda triage -->
         <div class="card">
           <div class="card-header"><h3>📖 Niveles de Triage</h3></div>
           <div class="card-body">
@@ -687,7 +1002,6 @@ td { padding: 11px 14px; vertical-align: middle; }
 
     <!-- ── VER PACIENTES ───────────────────────── -->
     <div class="section" id="sec-pacientes">
-      <!-- Tabs -->
       <div style="display:flex;gap:6px;margin-bottom:18px" id="pac-tabs">
         <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera',this)">⏳ En Espera</button>
         <button class="btn btn-ghost btn-sm tab-btn" onclick="switchTab('registrados',this)">📋 Registrados</button>
@@ -767,6 +1081,83 @@ const TRIAGE_LABEL = {
 
 /* ── Estado del tab activo de pacientes ── */
 let currentTab = 'en_espera';
+
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
+const CRED_USUARIO = 'ADMINISTRADOR';
+const CRED_PASS    = 'HospitalTunal';
+
+function intentarLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  const form  = document.getElementById('login-form');
+
+  if (user === CRED_USUARIO && pass === CRED_PASS) {
+    errEl.classList.remove('show');
+    const overlay = document.getElementById('login-overlay');
+    overlay.classList.add('fade-out');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      /* Cargar datos del sistema al entrar */
+      loadStats();
+      loadColaDash();
+      loadAtencionDash();
+    }, 450);
+  } else {
+    errEl.classList.add('show');
+    document.getElementById('login-error-msg').textContent =
+      !user && !pass ? 'Por favor ingrese usuario y contraseña.' :
+      !user          ? 'El campo de usuario está vacío.' :
+      !pass          ? 'El campo de contraseña está vacío.' :
+                       'Usuario o contraseña incorrectos.';
+    /* Shake en el formulario */
+    form.classList.remove('shake');
+    void form.offsetWidth;
+    form.classList.add('shake');
+  }
+}
+
+/* Permitir Enter en los campos del login */
+document.addEventListener('DOMContentLoaded', () => {
+  ['login-user', 'login-pass'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') intentarLogin();
+    });
+  });
+
+  /* Limpiar error al escribir */
+  document.getElementById('login-user').addEventListener('input', () =>
+    document.getElementById('login-error').classList.remove('show'));
+  document.getElementById('login-pass').addEventListener('input', () =>
+    document.getElementById('login-error').classList.remove('show'));
+
+  /* Inicializar selects del triage */
+  buildTriageSelect();
+
+  /* Auto-refresh cada 15 s */
+  setInterval(() => {
+    const overlay = document.getElementById('login-overlay');
+    if (overlay.style.display === 'none' || overlay.classList.contains('fade-out')) {
+      const active = document.querySelector('.section.active');
+      if (active) refreshSection(active.id.replace('sec-',''));
+    }
+  }, 15000);
+
+  document.getElementById('triage-tipo').addEventListener('change', function() {
+    const val = this.value;
+    const prev = document.getElementById('triage-preview');
+    if (!val) { prev.style.display = 'none'; return; }
+    const tipo = TIPOS_EMERGENCIA.find(t => t.nombre === val);
+    if (!tipo) return;
+    prev.style.display = 'block';
+    document.getElementById('triage-preview-badge').innerHTML =
+      `<span class="badge ${TRIAGE_BADGE_CLASS[tipo.nivel]}">${TRIAGE_LABEL[tipo.nivel]}</span>`;
+    document.getElementById('triage-preview-tiempo').textContent =
+      `Tiempo estimado de atención: ${tipo.tiempo} minutos`;
+  });
+});
 
 /* ══════════════════════════════
    NAVEGACIÓN
@@ -962,30 +1353,6 @@ async function loadPacientesSinTriage() {
     sel.appendChild(opt);
   });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('triage-tipo').addEventListener('change', function() {
-    const val = this.value;
-    const prev = document.getElementById('triage-preview');
-    if (!val) { prev.style.display = 'none'; return; }
-    const tipo = TIPOS_EMERGENCIA.find(t => t.nombre === val);
-    if (!tipo) return;
-    prev.style.display = 'block';
-    document.getElementById('triage-preview-badge').innerHTML =
-      `<span class="badge ${TRIAGE_BADGE_CLASS[tipo.nivel]}">${TRIAGE_LABEL[tipo.nivel]}</span>`;
-    document.getElementById('triage-preview-tiempo').textContent =
-      `Tiempo estimado de atención: ${tipo.tiempo} minutos`;
-  });
-
-  buildTriageSelect();
-  loadStats();
-  loadColaDash();
-  loadAtencionDash();
-  setInterval(() => {
-    const active = document.querySelector('.section.active');
-    if (active) refreshSection(active.id.replace('sec-',''));
-  }, 15000);
-});
 
 async function asignarTriage() {
   const cedula          = document.getElementById('triage-paciente').value;
