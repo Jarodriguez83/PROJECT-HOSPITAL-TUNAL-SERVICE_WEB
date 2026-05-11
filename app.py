@@ -1,4 +1,4 @@
-#INICIAR CON: python app.py
+# INICIAR CON: python app.py
 """
 app.py  –  Capa Flask del Sistema de Urgencias
 Importa la lógica desde proyecto_salud.py sin modificarla.
@@ -6,9 +6,8 @@ Ejecutar:  python app.py   → abrir http://127.0.0.1:5000
 """
 
 import heapq
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 
-# ── Importar clases y constantes del archivo original ──────────
 from proyecto_salud import (
     SistemaUrgencias, Doctor, Paciente,
     EstadoDoctor, EstadoPaciente,
@@ -16,11 +15,12 @@ from proyecto_salud import (
 )
 
 app = Flask(__name__)
+app.secret_key = 'hospital_tunal_secret_2024'   # necesario para session
 
-# Instancia global del sistema (vive mientras el servidor esté activo)
+# Instancia global del sistema
 sistema = SistemaUrgencias()
 
-# Info extra para la UI (colores de triage)
+# Info de triage para la UI
 TRIAGE_BADGE = {
     1: {"color": "#e53e3e", "label": "T1 · ROJO",     "tiempo": "Inmediato"},
     2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "tiempo": "< 10 min"},
@@ -29,8 +29,12 @@ TRIAGE_BADGE = {
     5: {"color": "#3182ce", "label": "T5 · AZUL",     "tiempo": "< 4 h"},
 }
 
+# Credenciales válidas
+USUARIO_VALIDO   = "ADMINISTRADOR"
+PASSWORD_VALIDO  = "HospitalTunal"
 
-# ── Helpers para serializar objetos del sistema ────────────────
+
+# ── Helpers ────────────────────────────────────────────────────
 
 def doctor_a_dict(doc: Doctor) -> dict:
     return {
@@ -63,12 +67,8 @@ def paciente_a_dict(p: Paciente) -> dict:
         ),
     }
 
-
-# ── Página principal ───────────────────────────────────────────
-
-@app.route("/")
-def index():
-    tipos = [
+def tipos_para_template():
+    return [
         {
             "nombre": nombre,
             "nivel":  nivel,
@@ -77,7 +77,52 @@ def index():
         }
         for nombre, (nivel, tiempo) in TIPOS_EMERGENCIA.items()
     ]
-    return render_template("index.html", tipos_emergencia=tipos)
+
+def autenticado():
+    return session.get('logged_in') is True
+
+
+# ── Rutas de autenticación ─────────────────────────────────────
+
+@app.route("/")
+def root():
+    """Redirige al login si no está autenticado, al dashboard si sí."""
+    if autenticado():
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('login'))
+
+
+@app.route("/login", methods=["GET"])
+def login():
+    if autenticado():
+        return redirect(url_for('dashboard'))
+    return render_template("login.html")
+
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    data     = request.get_json(silent=True) or {}
+    usuario  = data.get("usuario", "").strip()
+    password = data.get("password", "")
+    if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDO:
+        session['logged_in'] = True
+        return jsonify({"ok": True})
+    return jsonify({"ok": False, "mensaje": "Usuario o contraseña incorrectos."})
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+
+# ── Página principal del sistema ───────────────────────────────
+
+@app.route("/dashboard")
+def dashboard():
+    if not autenticado():
+        return redirect(url_for('login'))
+    return render_template("index.html", tipos_emergencia=tipos_para_template())
 
 
 # ── API: Doctores ──────────────────────────────────────────────
@@ -89,7 +134,7 @@ def api_doctores():
 
 @app.route("/api/doctores/agregar", methods=["POST"])
 def api_agregar_doctor():
-    d = request.json
+    d   = request.json
     did = d.get("id", "").strip()
     nom = d.get("nombre", "").strip()
     esp = d.get("especialidad", "").strip()
@@ -120,20 +165,16 @@ def api_pacientes():
     result = {"registrados": [], "en_espera": [], "en_atencion": [], "finalizados": []}
     for p in sistema.pacientes:
         pd = paciente_a_dict(p)
-        if p.estado == EstadoPaciente.REGISTRADO:
-            result["registrados"].append(pd)
-        elif p.estado == EstadoPaciente.EN_ESPERA:
-            result["en_espera"].append(pd)
-        elif p.estado == EstadoPaciente.EN_ATENCION:
-            result["en_atencion"].append(pd)
-        else:
-            result["finalizados"].append(pd)
+        if   p.estado == EstadoPaciente.REGISTRADO:  result["registrados"].append(pd)
+        elif p.estado == EstadoPaciente.EN_ESPERA:   result["en_espera"].append(pd)
+        elif p.estado == EstadoPaciente.EN_ATENCION: result["en_atencion"].append(pd)
+        else:                                         result["finalizados"].append(pd)
     return jsonify(result)
 
 
 @app.route("/api/pacientes/registrar", methods=["POST"])
 def api_registrar_paciente():
-    d = request.json
+    d      = request.json
     cedula = d.get("cedula", "").strip()
     for p in sistema.pacientes:
         if p.cedula == cedula:
@@ -153,7 +194,7 @@ def api_registrar_paciente():
 
 @app.route("/api/pacientes/triage", methods=["POST"])
 def api_triage():
-    d = request.json
+    d      = request.json
     cedula = d.get("cedula", "").strip()
     tipo   = d.get("tipo_emergencia", "").strip()
     if tipo not in TIPOS_EMERGENCIA:
@@ -162,12 +203,13 @@ def api_triage():
         if p.cedula == cedula and p.estado == EstadoPaciente.REGISTRADO:
             p.asignar_triage(tipo)
             heapq.heappush(sistema.cola_prioridad, p)
-            return jsonify({"ok": True, "mensaje": f"Triage asignado. Turno #{p.numero_turno}.",
+            return jsonify({"ok": True,
+                            "mensaje": f"Triage asignado. Turno #{p.numero_turno}.",
                             "turno": p.numero_turno})
     return jsonify({"ok": False, "mensaje": "Paciente no encontrado o ya tiene triage."})
 
 
-# ── API: Turnos ────────────────────────────────────────────────
+# ── API: Cola y turnos ─────────────────────────────────────────
 
 @app.route("/api/cola")
 def api_cola():
@@ -186,16 +228,18 @@ def api_cola():
 def api_atender():
     if not sistema.cola_prioridad:
         return jsonify({"ok": False, "mensaje": "No hay pacientes en cola."})
-    doc_libre = next((d for d in sistema.doctores.values()
-                      if d.estado == EstadoDoctor.DISPONIBLE), None)
+    doc_libre = next(
+        (d for d in sistema.doctores.values() if d.estado == EstadoDoctor.DISPONIBLE), None
+    )
     if not doc_libre:
         return jsonify({"ok": False, "mensaje": "No hay doctores disponibles."})
-    pac = heapq.heappop(sistema.cola_prioridad)
+    pac                      = heapq.heappop(sistema.cola_prioridad)
     pac.estado               = EstadoPaciente.EN_ATENCION
     doc_libre.estado         = EstadoDoctor.EN_TURNO
     doc_libre.paciente_actual= pac
     sistema.pacientes_en_atencion.append(pac)
-    return jsonify({"ok": True, "mensaje": f"{pac.nombre} asignado a Dr. {doc_libre.nombre}.",
+    return jsonify({"ok": True,
+                    "mensaje": f"{pac.nombre} asignado a Dr. {doc_libre.nombre}.",
                     "paciente": pac.nombre, "doctor": doc_libre.nombre,
                     "turno": pac.numero_turno, "tiempo": pac.tiempo_atencion})
 
@@ -210,8 +254,8 @@ def api_finalizar():
             sistema.pacientes_finalizados.append(p)
             for doc in sistema.doctores.values():
                 if doc.paciente_actual == p:
-                    doc.estado            = EstadoDoctor.DISPONIBLE
-                    doc.paciente_actual   = None
+                    doc.estado          = EstadoDoctor.DISPONIBLE
+                    doc.paciente_actual = None
                     break
             return jsonify({"ok": True, "mensaje": f"Atención de {p.nombre} finalizada."})
     return jsonify({"ok": False, "mensaje": "Paciente no encontrado en atención."})
@@ -221,14 +265,14 @@ def api_finalizar():
 
 @app.route("/api/estadisticas")
 def api_estadisticas():
-    total      = len(sistema.pacientes)
-    reg        = sum(1 for p in sistema.pacientes if p.estado == EstadoPaciente.REGISTRADO)
-    espera     = sum(1 for p in sistema.pacientes if p.estado == EstadoPaciente.EN_ESPERA)
-    atencion   = len(sistema.pacientes_en_atencion)
-    finalizados= len(sistema.pacientes_finalizados)
-    docs_disp  = sum(1 for d in sistema.doctores.values() if d.estado == EstadoDoctor.DISPONIBLE)
-    docs_turno = len(sistema.doctores) - docs_disp
-    tiempo_cola= sum(p.tiempo_atencion for p in sistema.cola_prioridad)
+    total       = len(sistema.pacientes)
+    reg         = sum(1 for p in sistema.pacientes if p.estado == EstadoPaciente.REGISTRADO)
+    espera      = sum(1 for p in sistema.pacientes if p.estado == EstadoPaciente.EN_ESPERA)
+    atencion    = len(sistema.pacientes_en_atencion)
+    finalizados = len(sistema.pacientes_finalizados)
+    docs_disp   = sum(1 for d in sistema.doctores.values() if d.estado == EstadoDoctor.DISPONIBLE)
+    docs_turno  = len(sistema.doctores) - docs_disp
+    tiempo_cola = sum(p.tiempo_atencion for p in sistema.cola_prioridad)
     return jsonify({
         "total": total, "registrados": reg, "en_espera": espera,
         "en_atencion": atencion, "finalizados": finalizados,
@@ -238,8 +282,8 @@ def api_estadisticas():
 
 
 if __name__ == "__main__":
-    print("\n" + "═"*55)
+    print("\n" + "═" * 55)
     print("  🏥  HOSPITAL DEL TUNAL — Sistema de Urgencias")
     print("  Abre tu navegador en → http://127.0.0.1:5000")
-    print("═"*55 + "\n")
+    print("═" * 55 + "\n")
     app.run(debug=True, port=5000)
