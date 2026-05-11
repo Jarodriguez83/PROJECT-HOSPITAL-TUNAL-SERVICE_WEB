@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital del Tunal · Acceso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"/>
+</head>
+<body>
+
+  <div id="login-overlay">
+
+    <!-- ══════════════════════════════════════════
+         LADO IZQUIERDO — espacio para imagen
+    ══════════════════════════════════════════ -->
+    <div class="login-left">
+      <div class="login-left-inner">
+        <!--
+          Para mostrar tu imagen institucional, reemplaza este bloque por:
+          <img src="{{ url_for('static', filename='img/tu-imagen.jpg') }}"
+               alt="Hospital del Tunal"/>
+        -->
+        <div class="img-placeholder-icon">🏥</div>
+        <div class="img-placeholder-label">
+          Espacio reservado para imagen institucional<br/>
+          <small style="font-size:11px;opacity:.6">(reemplaza con tu &lt;img&gt;)</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         LADO DERECHO — formulario de acceso
+    ══════════════════════════════════════════ -->
+    <div class="login-right">
+      <div class="login-box">
+
+        <!-- Encabezado -->
+        <div class="login-header">
+          <span class="login-cross">🏥</span>
+          <h1>Hospital del Tunal</h1>
+          <span class="login-sub">Sistema de Gestión de Urgencias · Bogotá</span>
+        </div>
+
+        <!-- Mensaje de bienvenida -->
+        <div class="login-welcome">
+          👋 Bienvenido al sistema de urgencias.<br/>
+          Por favor ingrese sus credenciales para continuar.
+        </div>
+
+        <!-- Formulario -->
+        <div class="login-form" id="login-form">
+
+          <div class="login-field">
+            <label for="login-user">Usuario</label>
+            <input
+              id="login-user"
+              type="text"
+              placeholder="Ingrese su usuario"
+              autocomplete="username"
+              spellcheck="false"
+            />
+          </div>
+
+          <div class="login-field">
+            <label for="login-pass">Contraseña</label>
+            <input
+              id="login-pass"
+              type="password"
+              placeholder="Ingrese su contraseña"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <!-- Mensaje de error -->
+          <div class="login-error" id="login-error">
+            <span>⚠️</span>
+            <span id="login-error-msg">Usuario o contraseña incorrectos.</span>
+          </div>
+
+          <button class="login-btn" id="login-btn" onclick="intentarLogin()">
+            Iniciar sesión
+          </button>
+
+        </div><!-- /login-form -->
+
+        <!-- Nota al pie -->
+        <div class="login-footer-note">
+          Sistema restringido al personal autorizado del Hospital del Tunal.<br/>
+          Solo urgencias — operación 24 horas.
+        </div>
+
+      </div><!-- /login-box -->
+    </div><!-- /login-right -->
+
+  </div><!-- /login-overlay -->
+
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+</body>
+</html>
