@@ -1,787 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hospital del Tunal · Urgencias</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
-<style>
-/* ═══════════════════════════════════════════
-   VARIABLES & RESET
-═══════════════════════════════════════════ */
-:root {
-  --bg:        #0d1117;
-  --bg2:       #161b22;
-  --bg3:       #1c2333;
-  --border:    #30363d;
-  --text:      #e6edf3;
-  --text2:     #8b949e;
-  --accent:    #1f6feb;
-  --accent2:   #388bfd;
-  --green:     #3fb950;
-  --red:       #f85149;
-  --orange:    #d29922;
-  --yellow:    #e3b341;
-  --blue:      #58a6ff;
-  --purple:    #a371f7;
-  --t1:        #f85149;
-  --t2:        #e8914a;
-  --t3:        #d29922;
-  --t4:        #3fb950;
-  --t5:        #58a6ff;
-  --radius:    10px;
-  --radius-lg: 16px;
-  --shadow:    0 4px 24px rgba(0,0,0,.4);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-}
-
-/* ═══════════════════════════════════════════
-   LOGIN OVERLAY
-═══════════════════════════════════════════ */
-#login-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--bg);
-  display: flex;
-  align-items: stretch;
-  min-height: 100vh;
-}
-
-.login-left {
-  flex: 1;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
-
-.login-left-inner {
-  width: 90%;
-  max-width: 480px;
-  height: 70%;
-  min-height: 320px;
-  max-height: 520px;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  background: var(--bg3);
-}
-
-.login-left-inner .img-placeholder-icon {
-  font-size: 54px;
-  opacity: .35;
-}
-
-.login-left-inner .img-placeholder-label {
-  font-size: 13px;
-  color: var(--text2);
-  text-align: center;
-  line-height: 1.5;
-  max-width: 240px;
-}
-
-/* Cuando haya imagen real */
-.login-left-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: calc(var(--radius-lg) - 2px);
-  display: block;
-}
-
-.login-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 32px;
-}
-
-.login-box {
-  width: 100%;
-  max-width: 400px;
-}
-
-.login-header {
-  margin-bottom: 36px;
-}
-
-.login-header .login-cross {
-  font-size: 36px;
-  display: block;
-  margin-bottom: 12px;
-}
-
-.login-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-  line-height: 1.2;
-}
-
-.login-header .login-sub {
-  font-size: 13px;
-  color: var(--text2);
-}
-
-.login-welcome {
-  background: rgba(56,139,253,.08);
-  border: 1px solid rgba(56,139,253,.25);
-  border-radius: var(--radius);
-  padding: 12px 16px;
-  margin-bottom: 28px;
-  font-size: 13px;
-  color: var(--accent2);
-  line-height: 1.5;
-}
-
-.login-form { display: flex; flex-direction: column; gap: 18px; }
-
-.login-field { display: flex; flex-direction: column; gap: 6px; }
-
-.login-field label {
-  font-size: 11px;
-  color: var(--text2);
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
-.login-field input {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  padding: 11px 14px;
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-  width: 100%;
-}
-
-.login-field input:focus {
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(56,139,253,.15);
-}
-
-.login-error {
-  background: rgba(248,81,73,.1);
-  border: 1px solid rgba(248,81,73,.3);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--red);
-  display: none;
-  align-items: center;
-  gap: 8px;
-}
-
-.login-error.show { display: flex; }
-
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--radius);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: background .15s, transform .1s;
-  letter-spacing: .02em;
-  margin-top: 4px;
-}
-
-.login-btn:hover  { background: var(--accent2); }
-.login-btn:active { transform: scale(.98); }
-
-.login-footer-note {
-  margin-top: 24px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.6;
-}
-
-/* Shake animation for wrong credentials */
-@keyframes shake {
-  0%,100%{ transform: translateX(0); }
-  20%    { transform: translateX(-8px); }
-  40%    { transform: translateX(8px); }
-  60%    { transform: translateX(-5px); }
-  80%    { transform: translateX(5px); }
-}
-.shake { animation: shake .4s ease; }
-
-/* Fade-out overlay */
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to   { opacity: 0; pointer-events: none; }
-}
-#login-overlay.fade-out {
-  animation: fadeOut .45s ease forwards;
-}
-
-/* Responsive login */
-@media (max-width: 768px) {
-  #login-overlay { flex-direction: column; }
-  .login-left {
-    flex: none;
-    height: 220px;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-  .login-left-inner {
-    width: 85%;
-    height: 160px;
-    min-height: unset;
-    max-height: unset;
-  }
-  .login-left-inner .img-placeholder-icon { font-size: 36px; }
-  .login-right { padding: 28px 20px; }
-  .login-header h1 { font-size: 20px; }
-}
-
-@media (max-width: 480px) {
-  .login-left { height: 160px; }
-  .login-left-inner { height: 120px; }
-}
-
-/* ═══════════════════════════════════════════
-   SIDEBAR
-═══════════════════════════════════════════ */
-.sidebar {
-  width: 220px;
-  min-height: 100vh;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 100;
-}
-.sidebar-logo {
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo .cross {
-  font-size: 26px;
-  margin-bottom: 6px;
-}
-.sidebar-logo h1 {
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--text);
-}
-.sidebar-logo small {
-  font-size: 10px;
-  color: var(--text2);
-  font-weight: 400;
-}
-nav { flex: 1; padding: 10px 0; }
-.nav-section {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text2);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  padding: 14px 20px 6px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: all .15s;
-  font-size: 13px;
-  color: var(--text2);
-  user-select: none;
-}
-.nav-item:hover { background: var(--bg3); color: var(--text); }
-.nav-item.active {
-  background: rgba(31,111,235,.12);
-  border-left-color: var(--accent2);
-  color: var(--accent2);
-  font-weight: 500;
-}
-.nav-item .icon { font-size: 15px; flex-shrink: 0; }
-.sidebar-footer {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--text2);
-}
-.pulse {
-  display: inline-block;
-  width: 7px; height: 7px;
-  background: var(--green);
-  border-radius: 50%;
-  margin-right: 5px;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%,100%{ opacity:1; transform:scale(1); }
-  50%{ opacity:.4; transform:scale(.8); }
-}
-
-/* ═══════════════════════════════════════════
-   MAIN CONTENT
-═══════════════════════════════════════════ */
-.main {
-  margin-left: 220px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.topbar {
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 90;
-}
-.topbar h2 { font-size: 16px; font-weight: 600; }
-.topbar small { color: var(--text2); font-size: 12px; margin-left: 10px; font-weight: 400; }
-.topbar-right { display: flex; gap: 8px; align-items: center; }
-.content { padding: 28px; flex: 1; }
-
-/* ═══════════════════════════════════════════
-   SECTIONS
-═══════════════════════════════════════════ */
-.section { display: none; }
-.section.active { display: block; }
-
-/* ═══════════════════════════════════════════
-   DASHBOARD STATS
-═══════════════════════════════════════════ */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
-}
-.stat-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  transition: border-color .2s;
-}
-.stat-card:hover { border-color: var(--accent); }
-.stat-card .val {
-  font-size: 32px;
-  font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-.stat-card .lbl { font-size: 12px; color: var(--text2); }
-.stat-card.c-blue  .val { color: var(--blue); }
-.stat-card.c-green .val { color: var(--green); }
-.stat-card.c-red   .val { color: var(--red); }
-.stat-card.c-orange .val{ color: var(--orange); }
-.stat-card.c-purple .val{ color: var(--purple); }
-
-/* ═══════════════════════════════════════════
-   CARDS / PANELS
-═══════════════════════════════════════════ */
-.card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-.card-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg3);
-}
-.card-header h3 { font-size: 14px; font-weight: 600; }
-.card-body { padding: 20px; }
-
-/* ═══════════════════════════════════════════
-   TWO COLUMNS
-═══════════════════════════════════════════ */
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-@media(max-width:900px){ .two-col{ grid-template-columns:1fr; } }
-
-/* ═══════════════════════════════════════════
-   FORMS
-═══════════════════════════════════════════ */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-.form-grid.cols-1 { grid-template-columns: 1fr; }
-.field { display: flex; flex-direction: column; gap: 5px; }
-.field.span2 { grid-column: span 2; }
-label { font-size: 11px; color: var(--text2); font-weight: 500; letter-spacing:.03em; text-transform:uppercase; }
-input, select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  padding: 9px 12px;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-  width: 100%;
-}
-input:focus, select:focus {
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(56,139,253,.15);
-}
-select option { background: var(--bg2); }
-
-/* ═══════════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════════ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all .15s;
-  font-family: 'Inter', sans-serif;
-  white-space: nowrap;
-}
-.btn:active { transform: scale(.97); }
-.btn-primary { background: var(--accent); color:#fff; border-color: var(--accent); }
-.btn-primary:hover { background: var(--accent2); }
-.btn-success { background: rgba(63,185,80,.15); color: var(--green); border-color: rgba(63,185,80,.35); }
-.btn-success:hover { background: rgba(63,185,80,.25); }
-.btn-danger { background: rgba(248,81,73,.12); color: var(--red); border-color: rgba(248,81,73,.35); }
-.btn-danger:hover { background: rgba(248,81,73,.22); }
-.btn-ghost { background: transparent; color: var(--text2); border-color: var(--border); }
-.btn-ghost:hover { color: var(--text); background: var(--bg3); }
-.btn-sm { padding: 5px 11px; font-size: 12px; }
-
-/* ═══════════════════════════════════════════
-   TABLE
-═══════════════════════════════════════════ */
-.table-wrap { overflow-x: auto; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-thead th {
-  text-align: left;
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text2);
-  letter-spacing:.05em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg3);
-}
-tbody tr {
-  border-bottom: 1px solid var(--border);
-  transition: background .12s;
-}
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: rgba(255,255,255,.03); }
-td { padding: 11px 14px; vertical-align: middle; }
-
-/* ═══════════════════════════════════════════
-   BADGES
-═══════════════════════════════════════════ */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.badge-t1 { background: rgba(248,81,73,.18);   color: var(--t1); }
-.badge-t2 { background: rgba(232,145,74,.18);  color: var(--t2); }
-.badge-t3 { background: rgba(210,153,34,.18);  color: var(--t3); }
-.badge-t4 { background: rgba(63,185,80,.18);   color: var(--t4); }
-.badge-t5 { background: rgba(88,166,255,.18);  color: var(--t5); }
-.badge-ok  { background: rgba(63,185,80,.15);  color: var(--green); }
-.badge-warn{ background: rgba(210,153,34,.15); color: var(--yellow); }
-.badge-info{ background: rgba(88,166,255,.12); color: var(--blue); }
-.badge-muted{ background: var(--bg3); color: var(--text2); }
-
-/* ═══════════════════════════════════════════
-   ALERT / TOAST
-═══════════════════════════════════════════ */
-#toast {
-  position: fixed;
-  bottom: 28px; right: 28px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 13px 18px;
-  font-size: 13px;
-  box-shadow: var(--shadow);
-  max-width: 340px;
-  z-index: 999;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: all .25s;
-  pointer-events: none;
-}
-#toast.show { opacity:1; transform:translateY(0); pointer-events:auto; }
-#toast.ok   { border-left: 3px solid var(--green); }
-#toast.err  { border-left: 3px solid var(--red); }
-#toast .toast-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
-
-/* ═══════════════════════════════════════════
-   QUEUE BAR
-═══════════════════════════════════════════ */
-.wait-bar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.wait-bar-bg {
-  flex: 1;
-  height: 6px;
-  background: var(--bg3);
-  border-radius: 9px;
-  overflow: hidden;
-}
-.wait-bar-fill {
-  height: 100%;
-  border-radius: 9px;
-  background: var(--accent2);
-  transition: width .4s;
-}
-.wait-label { font-size: 11px; color: var(--text2); min-width: 42px; text-align:right; }
-
-/* ═══════════════════════════════════════════
-   DOCTOR CARD LIST
-═══════════════════════════════════════════ */
-.doctor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 12px;
-}
-.doctor-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  transition: border-color .2s;
-}
-.doctor-card:hover { border-color: var(--accent); }
-.doctor-card .dc-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.doctor-card .dc-id {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--text2);
-  background: var(--bg);
-  padding: 2px 7px;
-  border-radius: 5px;
-}
-.doctor-card .dc-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-.doctor-card .dc-esp  { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
-.doctor-card .dc-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.dot-green { color: var(--green); }
-.dot-red   { color: var(--red); }
-
-/* ═══════════════════════════════════════════
-   TRIAGE LEGEND
-═══════════════════════════════════════════ */
-.triage-legend {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.triage-legend .tl-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: var(--text2);
-}
-.tl-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ═══════════════════════════════════════════
-   EMPTY STATE
-═══════════════════════════════════════════ */
-.empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text2);
-}
-.empty .em-icon { font-size: 36px; margin-bottom: 10px; }
-.empty p { font-size: 13px; }
-
-/* ═══════════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════════ */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 20px 0;
-}
-
-/* ═══════════════════════════════════════════
-   RESPONSIVE SIDEBAR (mobile)
-═══════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    min-height: unset;
-    position: relative;
-    flex-direction: row;
-    flex-wrap: wrap;
-    overflow-x: auto;
-  }
-  .main { margin-left: 0; }
-  .sidebar-logo { padding: 14px 16px; border-bottom: none; border-right: 1px solid var(--border); }
-  nav { display: flex; flex-direction: row; overflow-x: auto; }
-  .nav-section { display: none; }
-  .nav-item { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; padding: 14px 12px; }
-  .nav-item.active { border-bottom-color: var(--accent2); border-left-color: transparent; }
-  .sidebar-footer { display: none; }
-  body { flex-direction: column; }
-}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital del Tunal · Urgencias</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════════
-     LOGIN OVERLAY
-══════════════════════════════════════════ -->
-<div id="login-overlay">
-
-  <!-- Lado izquierdo: espacio para imagen -->
-  <div class="login-left">
-    <div class="login-left-inner" id="login-img-container">
-      <!-- Si deseas mostrar una imagen, reemplaza este bloque por:
-           <img src="/static/tu-imagen.jpg" alt="Hospital del Tunal" />
-           o bien coloca aquí el tag <img> directamente -->
-      <div class="img-placeholder-icon">🏥</div>
-      <div class="img-placeholder-label">
-        Espacio reservado para imagen institucional<br/>
-        <small style="font-size:11px;opacity:.6">(reemplaza este bloque con tu &lt;img&gt;)</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- Lado derecho: formulario de acceso -->
-  <div class="login-right">
-    <div class="login-box">
-
-      <div class="login-header">
-        <span class="login-cross">🏥</span>
-        <h1>Hospital del Tunal</h1>
-        <span class="login-sub">Sistema de Gestión de Urgencias · Bogotá</span>
-      </div>
-
-      <div class="login-welcome">
-        👋 Bienvenido al sistema de urgencias.<br/>
-        Por favor ingrese sus credenciales para continuar.
-      </div>
-
-      <div class="login-form" id="login-form">
-        <div class="login-field">
-          <label for="login-user">Usuario</label>
-          <input
-            id="login-user"
-            type="text"
-            placeholder="Ingrese su usuario"
-            autocomplete="username"
-            spellcheck="false"
-          />
-        </div>
-
-        <div class="login-field">
-          <label for="login-pass">Contraseña</label>
-          <input
-            id="login-pass"
-            type="password"
-            placeholder="Ingrese su contraseña"
-            autocomplete="current-password"
-          />
-        </div>
-
-        <div class="login-error" id="login-error">
-          <span>⚠️</span>
-          <span id="login-error-msg">Usuario o contraseña incorrectos.</span>
-        </div>
-
-        <button class="login-btn" id="login-btn" onclick="intentarLogin()">
-          Iniciar sesión
-        </button>
-      </div>
-
-      <div class="login-footer-note">
-        Sistema restringido al personal autorizado del Hospital del Tunal.<br/>
-        Solo urgencias — operación 24 horas.
-      </div>
-
-    </div>
-  </div>
-</div>
 
 <!-- ══════════════════════════════════════════
      SIDEBAR
@@ -795,29 +21,29 @@ td { padding: 11px 14px; vertical-align: middle; }
 
   <nav>
     <div class="nav-section">General</div>
-    <div class="nav-item active" onclick="goTo('dashboard',this)">
+    <div class="nav-item active" onclick="goTo('dashboard', this)">
       <span class="icon">📊</span> Dashboard
     </div>
 
     <div class="nav-section">Gestión</div>
-    <div class="nav-item" onclick="goTo('doctores',this)">
+    <div class="nav-item" onclick="goTo('doctores', this)">
       <span class="icon">👨‍⚕️</span> Doctores
     </div>
-    <div class="nav-item" onclick="goTo('registrar',this)">
+    <div class="nav-item" onclick="goTo('registrar', this)">
       <span class="icon">📋</span> Registrar Paciente
     </div>
-    <div class="nav-item" onclick="goTo('triage',this)">
+    <div class="nav-item" onclick="goTo('triage', this)">
       <span class="icon">🩺</span> Asignar Triage
     </div>
-    <div class="nav-item" onclick="goTo('pacientes',this)">
+    <div class="nav-item" onclick="goTo('pacientes', this)">
       <span class="icon">👥</span> Ver Pacientes
     </div>
 
     <div class="nav-section">Turnos</div>
-    <div class="nav-item" onclick="goTo('cola',this)">
+    <div class="nav-item" onclick="goTo('cola', this)">
       <span class="icon">⏳</span> Cola de Turnos
     </div>
-    <div class="nav-item" onclick="goTo('atencion',this)">
+    <div class="nav-item" onclick="goTo('atencion', this)">
       <span class="icon">🔔</span> En Atención
     </div>
   </nav>
@@ -831,6 +57,8 @@ td { padding: 11px 14px; vertical-align: middle; }
      MAIN
 ══════════════════════════════════════════ -->
 <div class="main">
+
+  <!-- Barra superior -->
   <div class="topbar">
     <div>
       <h2 id="topbar-title">Dashboard</h2>
@@ -844,18 +72,42 @@ td { padding: 11px 14px; vertical-align: middle; }
 
   <div class="content">
 
-    <!-- ── DASHBOARD ───────────────────────────── -->
+    <!-- ══════════════════════════════
+         SECCIÓN: DASHBOARD
+    ══════════════════════════════ -->
     <div class="section active" id="sec-dashboard">
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card c-blue">  <div class="val" id="st-total">0</div><div class="lbl">Total Pacientes</div></div>
-        <div class="stat-card c-orange"><div class="val" id="st-espera">0</div><div class="lbl">En Cola</div></div>
-        <div class="stat-card c-red">   <div class="val" id="st-atencion">0</div><div class="lbl">En Atención</div></div>
-        <div class="stat-card c-green"> <div class="val" id="st-finalizados">0</div><div class="lbl">Finalizados</div></div>
-        <div class="stat-card c-purple"><div class="val" id="st-docs-disp">0</div><div class="lbl">Docs. Disponibles</div></div>
-        <div class="stat-card c-orange"><div class="val" id="st-docs-turno">0</div><div class="lbl">Docs. En Turno</div></div>
+
+      <!-- Tarjetas de estadísticas -->
+      <div class="stats-grid">
+        <div class="stat-card c-blue">
+          <div class="val" id="st-total">0</div>
+          <div class="lbl">Total Pacientes</div>
+        </div>
+        <div class="stat-card c-orange">
+          <div class="val" id="st-espera">0</div>
+          <div class="lbl">En Cola</div>
+        </div>
+        <div class="stat-card c-red">
+          <div class="val" id="st-atencion">0</div>
+          <div class="lbl">En Atención</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="val" id="st-finalizados">0</div>
+          <div class="lbl">Finalizados</div>
+        </div>
+        <div class="stat-card c-purple">
+          <div class="val" id="st-docs-disp">0</div>
+          <div class="lbl">Docs. Disponibles</div>
+        </div>
+        <div class="stat-card c-orange">
+          <div class="val" id="st-docs-turno">0</div>
+          <div class="lbl">Docs. En Turno</div>
+        </div>
       </div>
 
+      <!-- Cola rápida + en atención -->
       <div class="two-col">
+
         <div class="card">
           <div class="card-header">
             <h3>⏳ Próximos en cola</h3>
@@ -864,7 +116,14 @@ td { padding: 11px 14px; vertical-align: middle; }
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table id="tbl-cola-dash">
-                <thead><tr><th>Turno</th><th>Paciente</th><th>Triage</th><th>Espera est.</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Turno</th>
+                    <th>Paciente</th>
+                    <th>Triage</th>
+                    <th>Espera est.</th>
+                  </tr>
+                </thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -872,29 +131,52 @@ td { padding: 11px 14px; vertical-align: middle; }
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>🩺 En atención ahora</h3></div>
+          <div class="card-header">
+            <h3>🩺 En atención ahora</h3>
+          </div>
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table id="tbl-atencion-dash">
-                <thead><tr><th>Turno</th><th>Paciente</th><th>Doctor</th><th>Acción</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Turno</th>
+                    <th>Paciente</th>
+                    <th>Doctor</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
                 <tbody></tbody>
               </table>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ── DOCTORES ─────────────────────────────── -->
+      </div><!-- /two-col -->
+    </div><!-- /sec-dashboard -->
+
+
+    <!-- ══════════════════════════════
+         SECCIÓN: DOCTORES
+    ══════════════════════════════ -->
     <div class="section" id="sec-doctores">
       <div class="two-col">
+
         <div class="card">
           <div class="card-header"><h3>➕ Agregar Doctor</h3></div>
           <div class="card-body">
             <div class="form-grid cols-1">
-              <div class="field"><label>ID Doctor</label><input id="doc-id" placeholder="Ej: MED001"/></div>
-              <div class="field"><label>Nombre Completo</label><input id="doc-nombre" placeholder="Ej: Carlos Ramírez"/></div>
-              <div class="field"><label>Especialidad</label><input id="doc-esp" placeholder="Ej: Medicina de emergencias"/></div>
+              <div class="field">
+                <label>ID Doctor</label>
+                <input id="doc-id" placeholder="Ej: MED001"/>
+              </div>
+              <div class="field">
+                <label>Nombre Completo</label>
+                <input id="doc-nombre" placeholder="Ej: Carlos Ramírez"/>
+              </div>
+              <div class="field">
+                <label>Especialidad</label>
+                <input id="doc-esp" placeholder="Ej: Medicina de emergencias"/>
+              </div>
             </div>
             <div style="margin-top:14px">
               <button class="btn btn-primary" onclick="agregarDoctor()">Agregar Doctor</button>
@@ -908,61 +190,92 @@ td { padding: 11px 14px; vertical-align: middle; }
             <div class="doctor-grid" id="doctor-grid"></div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ── REGISTRAR PACIENTE ─────────────────── -->
+      </div>
+    </div><!-- /sec-doctores -->
+
+
+    <!-- ══════════════════════════════
+         SECCIÓN: REGISTRAR PACIENTE
+    ══════════════════════════════ -->
     <div class="section" id="sec-registrar">
       <div class="card" style="max-width:720px">
         <div class="card-header"><h3>📋 Registrar Nuevo Paciente</h3></div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="field"><label>Nombre Completo</label><input id="p-nombre" placeholder="Nombre y apellidos"/></div>
-            <div class="field"><label>Cédula</label><input id="p-cedula" placeholder="Número de documento"/></div>
-            <div class="field"><label>Teléfono</label><input id="p-tel" placeholder="Celular o fijo"/></div>
-            <div class="field"><label>Sexo</label>
+            <div class="field">
+              <label>Nombre Completo</label>
+              <input id="p-nombre" placeholder="Nombre y apellidos"/>
+            </div>
+            <div class="field">
+              <label>Cédula</label>
+              <input id="p-cedula" placeholder="Número de documento"/>
+            </div>
+            <div class="field">
+              <label>Teléfono</label>
+              <input id="p-tel" placeholder="Celular o fijo"/>
+            </div>
+            <div class="field">
+              <label>Sexo</label>
               <select id="p-sexo">
                 <option value="">Seleccionar...</option>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
               </select>
             </div>
-            <div class="field"><label>EPS</label><input id="p-eps" placeholder="Nombre de la EPS"/></div>
-            <div class="field"><label>Fecha de Nacimiento</label><input id="p-fnac" type="date"/></div>
-            <div class="field span2"><label>Teléfono de Emergencia</label><input id="p-telemerg" placeholder="Contacto de emergencia"/></div>
+            <div class="field">
+              <label>EPS</label>
+              <input id="p-eps" placeholder="Nombre de la EPS"/>
+            </div>
+            <div class="field">
+              <label>Fecha de Nacimiento</label>
+              <input id="p-fnac" type="date"/>
+            </div>
+            <div class="field span2">
+              <label>Teléfono de Emergencia</label>
+              <input id="p-telemerg" placeholder="Contacto de emergencia"/>
+            </div>
           </div>
           <div style="margin-top:18px;display:flex;gap:10px">
             <button class="btn btn-primary" onclick="registrarPaciente()">Registrar Paciente</button>
-            <button class="btn btn-ghost" onclick="limpiarFormPaciente()">Limpiar</button>
+            <button class="btn btn-ghost"   onclick="limpiarFormPaciente()">Limpiar</button>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /sec-registrar -->
 
-    <!-- ── TRIAGE ────────────────────────────────── -->
+
+    <!-- ══════════════════════════════
+         SECCIÓN: TRIAGE
+    ══════════════════════════════ -->
     <div class="section" id="sec-triage">
       <div class="two-col">
+
         <div class="card">
           <div class="card-header"><h3>🩺 Asignar Triage</h3></div>
           <div class="card-body">
             <div class="form-grid cols-1">
+
               <div class="field">
                 <label>Paciente (sin triage)</label>
                 <select id="triage-paciente">
                   <option value="">Cargando...</option>
                 </select>
               </div>
+
               <div class="field">
                 <label>Tipo de Emergencia</label>
                 <select id="triage-tipo">
                   <option value="">Seleccionar emergencia...</option>
                 </select>
               </div>
+
               <div id="triage-preview" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
                 <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Vista previa</div>
                 <div id="triage-preview-badge" style="margin-bottom:6px"></div>
                 <div id="triage-preview-tiempo" style="font-size:12px;color:var(--text2)"></div>
               </div>
+
             </div>
             <div style="margin-top:16px">
               <button class="btn btn-primary" onclick="asignarTriage()">Asignar Triage y Turno</button>
@@ -974,48 +287,80 @@ td { padding: 11px 14px; vertical-align: middle; }
           <div class="card-header"><h3>📖 Niveles de Triage</h3></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:10px">
+
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(248,81,73,.08);border-radius:8px;border-left:4px solid var(--t1)">
                 <span style="font-size:20px">🔴</span>
-                <div><div style="font-weight:600;font-size:13px">TRIAGE I — Resucitación</div><div style="font-size:11px;color:var(--text2)">Atención INMEDIATA · Paro cardíaco, politrauma grave</div></div>
+                <div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE I — Resucitación</div>
+                  <div style="font-size:11px;color:var(--text2)">Atención INMEDIATA · Paro cardíaco, politrauma grave</div>
+                </div>
               </div>
+
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(232,145,74,.08);border-radius:8px;border-left:4px solid var(--t2)">
                 <span style="font-size:20px">🟠</span>
-                <div><div style="font-weight:600;font-size:13px">TRIAGE II — Emergencia</div><div style="font-size:11px;color:var(--text2)">Atención &lt; 10 min · Dificultad respiratoria, ACV</div></div>
+                <div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE II — Emergencia</div>
+                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 10 min · Dificultad respiratoria, ACV</div>
+                </div>
               </div>
+
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(210,153,34,.08);border-radius:8px;border-left:4px solid var(--t3)">
                 <span style="font-size:20px">🟡</span>
-                <div><div style="font-weight:600;font-size:13px">TRIAGE III — Urgente</div><div style="font-size:11px;color:var(--text2)">Atención &lt; 30 min · Fractura vascular, abdomen agudo</div></div>
+                <div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE III — Urgente</div>
+                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 30 min · Fractura vascular, abdomen agudo</div>
+                </div>
               </div>
+
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(63,185,80,.08);border-radius:8px;border-left:4px solid var(--t4)">
                 <span style="font-size:20px">🟢</span>
-                <div><div style="font-weight:600;font-size:13px">TRIAGE IV — Menos urgente</div><div style="font-size:11px;color:var(--text2)">Atención &lt; 2 horas · Fiebre, heridas leves</div></div>
+                <div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE IV — Menos urgente</div>
+                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 2 horas · Fiebre, heridas leves</div>
+                </div>
               </div>
+
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(88,166,255,.08);border-radius:8px;border-left:4px solid var(--t5)">
                 <span style="font-size:20px">🔵</span>
-                <div><div style="font-weight:600;font-size:13px">TRIAGE V — No urgente</div><div style="font-size:11px;color:var(--text2)">Atención &lt; 4 horas · Malestar general, gripe</div></div>
+                <div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE V — No urgente</div>
+                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 4 horas · Malestar general, gripe</div>
+                </div>
               </div>
+
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ── VER PACIENTES ───────────────────────── -->
-    <div class="section" id="sec-pacientes">
-      <div style="display:flex;gap:6px;margin-bottom:18px" id="pac-tabs">
-        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera',this)">⏳ En Espera</button>
-        <button class="btn btn-ghost btn-sm tab-btn" onclick="switchTab('registrados',this)">📋 Registrados</button>
-        <button class="btn btn-ghost btn-sm tab-btn" onclick="switchTab('finalizados',this)">✅ Finalizados</button>
       </div>
+    </div><!-- /sec-triage -->
+
+
+    <!-- ══════════════════════════════
+         SECCIÓN: VER PACIENTES
+    ══════════════════════════════ -->
+    <div class="section" id="sec-pacientes">
+
+      <div style="display:flex;gap:6px;margin-bottom:18px">
+        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)">⏳ En Espera</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('registrados', this)">📋 Registrados</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('finalizados', this)">✅ Finalizados</button>
+      </div>
+
       <div class="card">
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
             <table id="tbl-pacientes">
               <thead>
                 <tr>
-                  <th>Turno</th><th>Nombre</th><th>Cédula</th>
-                  <th>EPS</th><th>Triage</th><th>Emergencia</th>
-                  <th>Hora</th><th>Estado</th>
+                  <th>Turno</th>
+                  <th>Nombre</th>
+                  <th>Cédula</th>
+                  <th>EPS</th>
+                  <th>Triage</th>
+                  <th>Emergencia</th>
+                  <th>Hora</th>
+                  <th>Estado</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -1023,9 +368,13 @@ td { padding: 11px 14px; vertical-align: middle; }
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ── COLA DE TURNOS ─────────────────────── -->
+    </div><!-- /sec-pacientes -->
+
+
+    <!-- ══════════════════════════════
+         SECCIÓN: COLA DE TURNOS
+    ══════════════════════════════ -->
     <div class="section" id="sec-cola">
       <div class="card">
         <div class="card-header">
@@ -1035,473 +384,68 @@ td { padding: 11px 14px; vertical-align: middle; }
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
             <table id="tbl-cola">
-              <thead><tr><th>Pos.</th><th>Turno</th><th>Nombre</th><th>Emergencia</th><th>Triage</th><th>T. atención</th><th>Espera acum.</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Pos.</th>
+                  <th>Turno</th>
+                  <th>Nombre</th>
+                  <th>Emergencia</th>
+                  <th>Triage</th>
+                  <th>T. atención</th>
+                  <th>Espera acum.</th>
+                </tr>
+              </thead>
               <tbody></tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /sec-cola -->
 
-    <!-- ── EN ATENCIÓN ────────────────────────── -->
+
+    <!-- ══════════════════════════════
+         SECCIÓN: EN ATENCIÓN
+    ══════════════════════════════ -->
     <div class="section" id="sec-atencion">
       <div class="card">
         <div class="card-header"><h3>🔔 Pacientes en Atención</h3></div>
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
             <table id="tbl-atencion">
-              <thead><tr><th>Turno</th><th>Paciente</th><th>Emergencia</th><th>Triage</th><th>Doctor</th><th>T. est.</th><th>Finalizar</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Turno</th>
+                  <th>Paciente</th>
+                  <th>Emergencia</th>
+                  <th>Triage</th>
+                  <th>Doctor</th>
+                  <th>T. est.</th>
+                  <th>Finalizar</th>
+                </tr>
+              </thead>
               <tbody></tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /sec-atencion -->
 
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- TOAST -->
+<!-- Toast de notificaciones -->
 <div id="toast">
   <span class="toast-icon" id="toast-icon"></span>
   <span id="toast-msg"></span>
 </div>
 
-<!-- ══════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════ -->
+<!-- Variable global inyectada por Flask -->
 <script>
-/* ── Tipos de emergencia (inyectados por Flask) ── */
-const TIPOS_EMERGENCIA = {{ tipos_emergencia | tojson }};
-const TRIAGE_BADGE_CLASS = {1:'badge-t1',2:'badge-t2',3:'badge-t3',4:'badge-t4',5:'badge-t5'};
-const TRIAGE_LABEL = {
-  1:'🔴 T1 · ROJO',2:'🟠 T2 · NARANJA',
-  3:'🟡 T3 · AMARILLO',4:'🟢 T4 · VERDE',5:'🔵 T5 · AZUL'
-};
-
-/* ── Estado del tab activo de pacientes ── */
-let currentTab = 'en_espera';
-
-/* ══════════════════════════════
-   LOGIN
-══════════════════════════════ */
-const CRED_USUARIO = 'ADMINISTRADOR';
-const CRED_PASS    = 'HospitalTunal';
-
-function intentarLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
-  const form  = document.getElementById('login-form');
-
-  if (user === CRED_USUARIO && pass === CRED_PASS) {
-    errEl.classList.remove('show');
-    const overlay = document.getElementById('login-overlay');
-    overlay.classList.add('fade-out');
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      /* Cargar datos del sistema al entrar */
-      loadStats();
-      loadColaDash();
-      loadAtencionDash();
-    }, 450);
-  } else {
-    errEl.classList.add('show');
-    document.getElementById('login-error-msg').textContent =
-      !user && !pass ? 'Por favor ingrese usuario y contraseña.' :
-      !user          ? 'El campo de usuario está vacío.' :
-      !pass          ? 'El campo de contraseña está vacío.' :
-                       'Usuario o contraseña incorrectos.';
-    /* Shake en el formulario */
-    form.classList.remove('shake');
-    void form.offsetWidth;
-    form.classList.add('shake');
-  }
-}
-
-/* Permitir Enter en los campos del login */
-document.addEventListener('DOMContentLoaded', () => {
-  ['login-user', 'login-pass'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', e => {
-      if (e.key === 'Enter') intentarLogin();
-    });
-  });
-
-  /* Limpiar error al escribir */
-  document.getElementById('login-user').addEventListener('input', () =>
-    document.getElementById('login-error').classList.remove('show'));
-  document.getElementById('login-pass').addEventListener('input', () =>
-    document.getElementById('login-error').classList.remove('show'));
-
-  /* Inicializar selects del triage */
-  buildTriageSelect();
-
-  /* Auto-refresh cada 15 s */
-  setInterval(() => {
-    const overlay = document.getElementById('login-overlay');
-    if (overlay.style.display === 'none' || overlay.classList.contains('fade-out')) {
-      const active = document.querySelector('.section.active');
-      if (active) refreshSection(active.id.replace('sec-',''));
-    }
-  }, 15000);
-
-  document.getElementById('triage-tipo').addEventListener('change', function() {
-    const val = this.value;
-    const prev = document.getElementById('triage-preview');
-    if (!val) { prev.style.display = 'none'; return; }
-    const tipo = TIPOS_EMERGENCIA.find(t => t.nombre === val);
-    if (!tipo) return;
-    prev.style.display = 'block';
-    document.getElementById('triage-preview-badge').innerHTML =
-      `<span class="badge ${TRIAGE_BADGE_CLASS[tipo.nivel]}">${TRIAGE_LABEL[tipo.nivel]}</span>`;
-    document.getElementById('triage-preview-tiempo').textContent =
-      `Tiempo estimado de atención: ${tipo.tiempo} minutos`;
-  });
-});
-
-/* ══════════════════════════════
-   NAVEGACIÓN
-══════════════════════════════ */
-const SECTION_TITLES = {
-  dashboard: ['Dashboard','Resumen del sistema en tiempo real'],
-  doctores:  ['Doctores','Gestión del personal médico'],
-  registrar: ['Registrar Paciente','Ingreso de nuevos pacientes'],
-  triage:    ['Asignar Triage','Clasificación y priorización'],
-  pacientes: ['Ver Pacientes','Listado por estado'],
-  cola:      ['Cola de Turnos','Orden de atención por prioridad'],
-  atencion:  ['En Atención','Pacientes siendo atendidos ahora'],
-};
-
-function goTo(id, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('sec-' + id).classList.add('active');
-  el.classList.add('active');
-  const [title, sub] = SECTION_TITLES[id];
-  document.getElementById('topbar-title').textContent = title;
-  document.getElementById('topbar-sub').textContent   = sub;
-  refreshSection(id);
-}
-
-function refreshSection(id) {
-  if (id === 'dashboard')  { loadStats(); loadColaDash(); loadAtencionDash(); }
-  if (id === 'doctores')   { loadDoctores(); }
-  if (id === 'triage')     { loadPacientesSinTriage(); buildTriageSelect(); }
-  if (id === 'pacientes')  { loadPacientesTab(); }
-  if (id === 'cola')       { loadCola(); }
-  if (id === 'atencion')   { loadAtencion(); }
-}
-
-function refreshAll() {
-  const active = document.querySelector('.section.active');
-  if (!active) return;
-  const id = active.id.replace('sec-', '');
-  refreshSection(id);
-}
-
-/* ══════════════════════════════
-   RELOJ
-══════════════════════════════ */
-function updateClock() {
-  const now = new Date();
-  document.getElementById('topbar-clock').textContent =
-    now.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-/* ══════════════════════════════
-   TOAST
-══════════════════════════════ */
-let toastTimer;
-function toast(msg, ok=true) {
-  const el   = document.getElementById('toast');
-  const icon = document.getElementById('toast-icon');
-  const txt  = document.getElementById('toast-msg');
-  el.className = 'show ' + (ok ? 'ok' : 'err');
-  icon.textContent = ok ? '✅' : '⚠️';
-  txt.textContent  = msg;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
-}
-
-/* ══════════════════════════════
-   API helpers
-══════════════════════════════ */
-async function api(url, body=null) {
-  const opts = body
-    ? { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }
-    : {};
-  const r = await fetch(url, opts);
-  return r.json();
-}
-
-/* ══════════════════════════════
-   ESTADÍSTICAS
-══════════════════════════════ */
-async function loadStats() {
-  const d = await api('/api/estadisticas');
-  document.getElementById('st-total').textContent      = d.total;
-  document.getElementById('st-espera').textContent     = d.en_espera;
-  document.getElementById('st-atencion').textContent   = d.en_atencion;
-  document.getElementById('st-finalizados').textContent= d.finalizados;
-  document.getElementById('st-docs-disp').textContent  = d.docs_disp;
-  document.getElementById('st-docs-turno').textContent = d.docs_turno;
-}
-
-/* ══════════════════════════════
-   DOCTORES
-══════════════════════════════ */
-async function loadDoctores() {
-  const docs = await api('/api/doctores');
-  const grid = document.getElementById('doctor-grid');
-  if (!docs.length) {
-    grid.innerHTML = '<div class="empty"><div class="em-icon">👨‍⚕️</div><p>No hay doctores registrados</p></div>';
-    return;
-  }
-  grid.innerHTML = docs.map(d => `
-    <div class="doctor-card">
-      <div class="dc-head">
-        <span class="dc-id">${d.id}</span>
-        <span class="${d.disponible ? 'dot-green' : 'dot-red'}">${d.disponible ? '● Disponible' : '● En turno'}</span>
-      </div>
-      <div class="dc-name">Dr(a). ${d.nombre}</div>
-      <div class="dc-esp">${d.especialidad}</div>
-      <div class="dc-foot">
-        ${d.paciente ? `<span style="font-size:11px;color:var(--text2)">🧑‍🤝‍🧑 ${d.paciente}</span>` : '<span></span>'}
-        ${d.disponible
-          ? `<button class="btn btn-danger btn-sm" onclick="eliminarDoctor('${d.id}')">Eliminar</button>`
-          : '<span class="badge badge-warn">En turno</span>'}
-      </div>
-    </div>
-  `).join('');
-}
-
-async function agregarDoctor() {
-  const id  = document.getElementById('doc-id').value.trim();
-  const nom = document.getElementById('doc-nombre').value.trim();
-  const esp = document.getElementById('doc-esp').value.trim();
-  if (!id || !nom || !esp) { toast('Completa todos los campos.', false); return; }
-  const r = await api('/api/doctores/agregar', {id, nombre:nom, especialidad:esp});
-  toast(r.mensaje, r.ok);
-  if (r.ok) {
-    document.getElementById('doc-id').value = '';
-    document.getElementById('doc-nombre').value = '';
-    document.getElementById('doc-esp').value = '';
-    loadDoctores();
-  }
-}
-
-async function eliminarDoctor(id) {
-  const r = await api('/api/doctores/eliminar', {id});
-  toast(r.mensaje, r.ok);
-  if (r.ok) loadDoctores();
-}
-
-/* ══════════════════════════════
-   REGISTRAR PACIENTE
-══════════════════════════════ */
-async function registrarPaciente() {
-  const campos = {
-    nombre: 'p-nombre', cedula: 'p-cedula', telefono: 'p-tel',
-    sexo: 'p-sexo', eps: 'p-eps', fecha_nacimiento: 'p-fnac',
-    telefono_emergencia: 'p-telemerg',
-  };
-  const data = {};
-  for (const [key, id] of Object.entries(campos)) {
-    data[key] = document.getElementById(id).value.trim();
-  }
-  if (!data.nombre || !data.cedula || !data.sexo) {
-    toast('Nombre, cédula y sexo son obligatorios.', false); return;
-  }
-  const r = await api('/api/pacientes/registrar', data);
-  toast(r.mensaje, r.ok);
-  if (r.ok) limpiarFormPaciente();
-}
-
-function limpiarFormPaciente() {
-  ['p-nombre','p-cedula','p-tel','p-sexo','p-eps','p-fnac','p-telemerg']
-    .forEach(id => document.getElementById(id).value = '');
-}
-
-/* ══════════════════════════════
-   TRIAGE
-══════════════════════════════ */
-function buildTriageSelect() {
-  const sel = document.getElementById('triage-tipo');
-  sel.innerHTML = '<option value="">Seleccionar emergencia...</option>';
-  TIPOS_EMERGENCIA.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.nombre;
-    opt.textContent = `${t.nombre}  (${t.badge.label} · ${t.tiempo} min)`;
-    sel.appendChild(opt);
-  });
-}
-
-async function loadPacientesSinTriage() {
-  const d   = await api('/api/pacientes');
-  const sel = document.getElementById('triage-paciente');
-  sel.innerHTML = '<option value="">Seleccionar paciente...</option>';
-  if (!d.registrados.length) {
-    sel.innerHTML = '<option value="">Sin pacientes pendientes de triage</option>';
-    return;
-  }
-  d.registrados.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.cedula;
-    opt.textContent = `${p.nombre}  (CC: ${p.cedula})`;
-    sel.appendChild(opt);
-  });
-}
-
-async function asignarTriage() {
-  const cedula          = document.getElementById('triage-paciente').value;
-  const tipo_emergencia = document.getElementById('triage-tipo').value;
-  if (!cedula || !tipo_emergencia) { toast('Selecciona paciente y tipo de emergencia.', false); return; }
-  const r = await api('/api/pacientes/triage', {cedula, tipo_emergencia});
-  toast(r.mensaje, r.ok);
-  if (r.ok) {
-    loadPacientesSinTriage();
-    document.getElementById('triage-tipo').value = '';
-    document.getElementById('triage-preview').style.display = 'none';
-  }
-}
-
-/* ══════════════════════════════
-   VER PACIENTES + TABS
-══════════════════════════════ */
-function switchTab(tab, el) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active','btn-primary'));
-  el.classList.add('active');
-  loadPacientesTab();
-}
-
-async function loadPacientesTab() {
-  const data = await api('/api/pacientes');
-  const lista = data[currentTab] || [];
-  const tbody = document.querySelector('#tbl-pacientes tbody');
-  if (!lista.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="em-icon">📭</div><p>Sin pacientes en esta categoría</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = lista.map(p => `
-    <tr>
-      <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px">#${p.numero_turno ?? '—'}</code></td>
-      <td><strong>${p.nombre}</strong></td>
-      <td style="color:var(--text2);font-size:12px">${p.cedula}</td>
-      <td style="font-size:12px">${p.eps || '—'}</td>
-      <td>${p.nivel_triage ? `<span class="badge ${TRIAGE_BADGE_CLASS[p.nivel_triage]}">${TRIAGE_LABEL[p.nivel_triage]}</span>` : '<span class="badge badge-muted">Sin triage</span>'}</td>
-      <td style="font-size:12px">${p.tipo_emergencia || '—'}</td>
-      <td style="font-size:12px;color:var(--text2)">${p.hora_registro}</td>
-      <td><span class="badge badge-info">${p.estado}</span></td>
-    </tr>
-  `).join('');
-}
-
-/* ══════════════════════════════
-   COLA
-══════════════════════════════ */
-async function loadCola() {
-  const cola  = await api('/api/cola');
-  const tbody = document.querySelector('#tbl-cola tbody');
-  if (!cola.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="em-icon">✅</div><p>Cola vacía — todos los pacientes han sido atendidos</p></div></td></tr>`;
-    return;
-  }
-  const maxEspera = cola.length ? cola[cola.length-1].espera_acumulada + cola[cola.length-1].tiempo_atencion : 1;
-  tbody.innerHTML = cola.map((p, i) => `
-    <tr>
-      <td style="color:var(--text2)">${i+1}</td>
-      <td><code style="font-family:'JetBrains Mono',monospace">#${p.numero_turno}</code></td>
-      <td><strong>${p.nombre}</strong></td>
-      <td style="font-size:12px">${p.tipo_emergencia}</td>
-      <td><span class="badge ${TRIAGE_BADGE_CLASS[p.nivel_triage]}">${TRIAGE_LABEL[p.nivel_triage]}</span></td>
-      <td style="font-size:12px">${p.tiempo_atencion} min</td>
-      <td>
-        <div class="wait-bar-wrap">
-          <div class="wait-bar-bg"><div class="wait-bar-fill" style="width:${Math.min(100,(p.espera_acumulada/maxEspera)*100)}%"></div></div>
-          <span class="wait-label">${p.espera_acumulada} min</span>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-async function loadColaDash() {
-  const cola  = await api('/api/cola');
-  const tbody = document.querySelector('#tbl-cola-dash tbody');
-  const preview = cola.slice(0,5);
-  if (!preview.length) {
-    tbody.innerHTML = `<tr><td colspan="4"><div class="empty" style="padding:20px"><p>Cola vacía</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = preview.map(p => `
-    <tr>
-      <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px">#${p.numero_turno}</code></td>
-      <td>${p.nombre}</td>
-      <td><span class="badge ${TRIAGE_BADGE_CLASS[p.nivel_triage]}">${TRIAGE_LABEL[p.nivel_triage]}</span></td>
-      <td style="font-size:12px;color:var(--text2)">${p.espera_acumulada} min</td>
-    </tr>
-  `).join('');
-}
-
-/* ══════════════════════════════
-   EN ATENCIÓN
-══════════════════════════════ */
-async function loadAtencion() {
-  const d     = await api('/api/pacientes');
-  const lista = d.en_atencion;
-  const tbody = document.querySelector('#tbl-atencion tbody');
-  if (!lista.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="em-icon">🏥</div><p>Ningún paciente en atención actualmente</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = lista.map(p => `
-    <tr>
-      <td><code style="font-family:'JetBrains Mono',monospace">#${p.numero_turno}</code></td>
-      <td><strong>${p.nombre}</strong></td>
-      <td style="font-size:12px">${p.tipo_emergencia}</td>
-      <td><span class="badge ${TRIAGE_BADGE_CLASS[p.nivel_triage]}">${TRIAGE_LABEL[p.nivel_triage]}</span></td>
-      <td style="font-size:12px">${p.doctor_asignado ?? '—'}</td>
-      <td style="font-size:12px">${p.tiempo_atencion} min</td>
-      <td><button class="btn btn-success btn-sm" onclick="finalizarAtencion('${p.cedula}')">✔ Finalizar</button></td>
-    </tr>
-  `).join('');
-}
-
-async function loadAtencionDash() {
-  const d     = await api('/api/pacientes');
-  const lista = d.en_atencion;
-  const tbody = document.querySelector('#tbl-atencion-dash tbody');
-  if (!lista.length) {
-    tbody.innerHTML = `<tr><td colspan="4"><div class="empty" style="padding:20px"><p>Ningún paciente en atención</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = lista.map(p => `
-    <tr>
-      <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px">#${p.numero_turno}</code></td>
-      <td>${p.nombre}</td>
-      <td style="font-size:12px">${p.doctor_asignado ?? '—'}</td>
-      <td><button class="btn btn-success btn-sm" onclick="finalizarAtencion('${p.cedula}')">✔</button></td>
-    </tr>
-  `).join('');
-}
-
-/* ══════════════════════════════
-   ACCIONES TURNO
-══════════════════════════════ */
-async function atenderSiguiente() {
-  const r = await api('/api/turnos/atender', {});
-  toast(r.mensaje, r.ok);
-  if (r.ok) { loadColaDash(); loadAtencionDash(); loadStats(); loadCola(); loadAtencion(); }
-}
-
-async function finalizarAtencion(cedula) {
-  const r = await api('/api/turnos/finalizar', {cedula});
-  toast(r.mensaje, r.ok);
-  if (r.ok) { loadAtencionDash(); loadAtencion(); loadStats(); loadDoctores(); }
-}
+  const TIPOS_EMERGENCIA = {{ tipos_emergencia | tojson }};
 </script>
+
+<!-- Lógica principal -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 </body>
 </html>
