@@ -21,19 +21,17 @@ sistema = SistemaUrgencias()
 # INFORMACIÓN DEL TRIAGE PARA SIGU
 TRIAGE_BADGE = {
     1: {"color": "#e53e3e", "label": "T1 · ROJO",     "TIEMPO": "INMEDIATO"},
-    2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "TIEMPO": "< 10 min"},
-    3: {"color": "#d69e2e", "label": "T3 · AMARILLO", "TIEMPO": "< 30 min"},
-    4: {"color": "#38a169", "label": "T4 · VERDE",    "TIEMPO": "< 2 h"},
-    5: {"color": "#3182ce", "label": "T5 · AZUL",     "TIEMPO": "< 4 h"},
+    2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "TIEMPO": "< 10 MINUTOS"},
+    3: {"color": "#d69e2e", "label": "T3 · AMARILLO", "TIEMPO": "< 30 MINUTOS"},
+    4: {"color": "#38a169", "label": "T4 · VERDE",    "TIEMPO": "< 2 HORAS"},
+    5: {"color": "#3182ce", "label": "T5 · AZUL",     "TIEMPO": "< 4 HORAS"},
 }
 
-# Credenciales válidas
+# CREDENCIALES DE ACCESO PARA EL SISTEMA 
 USUARIO_VALIDO   = "ADMINISTRADOR"
 PASSWORD_VALIDO  = "HospitalTunal"
 
-
-# ── Helpers ────────────────────────────────────────────────────
-
+# FUNCIONES AUXILIARES PARA CONVERTIR OBJETOS A DICCIONARIOS (DOCTOR -> dict) - FACILITAR SU USO EN LAS PLANTILLAS Y RESPUESTAS JSON
 def doctor_a_dict(doc: Doctor) -> dict:
     return {
         "id":           doc.doctor_id,
@@ -43,7 +41,7 @@ def doctor_a_dict(doc: Doctor) -> dict:
         "disponible":   doc.estado == EstadoDoctor.DISPONIBLE,
         "paciente":     doc.paciente_actual.nombre if doc.paciente_actual else None,
     }
-
+# CONVIERTE UN OBJETO A UN DICCIONARIO (PACIENTE -> dict) - FACILITAR SU USO EN LAS PLANTILLAS Y RESPUESTAS JSON
 def paciente_a_dict(p: Paciente) -> dict:
     return {
         "nombre":           p.nombre,
@@ -64,7 +62,7 @@ def paciente_a_dict(p: Paciente) -> dict:
             (d.nombre for d in sistema.doctores.values() if d.paciente_actual == p), None
         ),
     }
-
+# PREPARA LA INFORMACIÓN DE LOS TIPOS DE EMERGENCIA PARA SER USADA EN LAS PLANTILLAS 
 def tipos_para_template():
     return [
         {
@@ -75,28 +73,29 @@ def tipos_para_template():
         }
         for nombre, (nivel, tiempo) in TIPOS_EMERGENCIA.items()
     ]
-
+# VERIFICA SI EL USUARIO ESTÁ AUTENTICADO
 def autenticado():
     return session.get('logged_in') is True
 
-
-# ── Rutas de autenticación ─────────────────────────────────────
-
+# RUTAS DE LA APLICACIÓN
 @app.route("/")
 def root():
-    """Redirige al login si no está autenticado, al dashboard si sí."""
+    # SI PASA LA AUTENTICACIÓN: REDIRIGE A DASHBOARD
     if autenticado():
         return redirect(url_for('dashboard'))
+    # SI NO PASA LA AUTENTICACIÓN: REDIRIGE A LOGIN 
     return redirect(url_for('login'))
 
-
+# RUTAS DE AUTENTICACIÓN
+# GET: MUESTRA EL FORMULARIO DE LOGIN
 @app.route("/login", methods=["GET"])
 def login():
     if autenticado():
-        return redirect(url_for('dashboard'))
+        # return redirect(url_for('dashboard'))
+        return render_template("index.html") # ME DIRIGE AL index.html (DASHBOARD)
     return render_template("login.html")
 
-
+# POST: PROCESA LOS DATOS DEL FORMULARIO DE LOGIN
 @app.route("/login", methods=["POST"])
 def login_post():
     data     = request.get_json(silent=True) or {}
@@ -105,31 +104,27 @@ def login_post():
     if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDO:
         session['logged_in'] = True
         return jsonify({"ok": True})
-    return jsonify({"ok": False, "mensaje": "Usuario o contraseña incorrectos."})
+    return jsonify({"ok": False, "mensaje": "USUARIO O CONTRASEÑA DE ADMINISTRADOR INCORRECTOS."})
 
-
+# RUTA PARA CERRAR SESIÓN
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return render_template("login.html", mensaje="SESIÓN CERRADA EXITOSAMENTE.")
 
-
-# ── Página principal del sistema ───────────────────────────────
-
+# RUTA PRINCIPAL DEL DASHBOARD (LUEGO DE ENTRAR AL MOD: ADMINISTRADOR)
 @app.route("/dashboard")
 def dashboard():
     if not autenticado():
         return redirect(url_for('login'))
     return render_template("index.html", tipos_emergencia=tipos_para_template())
 
-
-# ── API: Doctores ──────────────────────────────────────────────
-
+# RUTA PARA OBTENER LA LISTA DE DOCTORES EN FORMATO JSON
 @app.route("/api/doctores")
 def api_doctores():
     return jsonify([doctor_a_dict(d) for d in sistema.doctores.values()])
 
-
+# RUTA PARA AGREGAR DOCTORES
 @app.route("/api/doctores/agregar", methods=["POST"])
 def api_agregar_doctor():
     d   = request.json
@@ -143,7 +138,7 @@ def api_agregar_doctor():
     sistema.doctores[did] = Doctor(did, nom, esp)
     return jsonify({"ok": True, "mensaje": f"Doctor {nom} agregado correctamente."})
 
-
+#RUTA PARA ELIMINAR DOCTORES
 @app.route("/api/doctores/eliminar", methods=["POST"])
 def api_eliminar_doctor():
     did = request.json.get("id", "").strip()
@@ -155,9 +150,7 @@ def api_eliminar_doctor():
     del sistema.doctores[did]
     return jsonify({"ok": True, "mensaje": f"Doctor {doc.nombre} eliminado."})
 
-
-# ── API: Pacientes ─────────────────────────────────────────────
-
+# RUTA PARA VER LOS PACIENTES (ESTADO)
 @app.route("/api/pacientes")
 def api_pacientes():
     result = {"registrados": [], "en_espera": [], "en_atencion": [], "finalizados": []}
@@ -169,14 +162,14 @@ def api_pacientes():
         else:                                         result["finalizados"].append(pd)
     return jsonify(result)
 
-
+# RUTA PARA REGISTRAR UN PACIENTE  
 @app.route("/api/pacientes/registrar", methods=["POST"])
 def api_registrar_paciente():
     d      = request.json
     cedula = d.get("cedula", "").strip()
     for p in sistema.pacientes:
         if p.cedula == cedula:
-            return jsonify({"ok": False, "mensaje": "Ya existe un paciente con esa cédula."})
+            return jsonify({"ok": False, "mensaje": "YA EXISTE UN PACIENTE CON ESA C.C."})
     pac = Paciente(
         d.get("nombre", "").strip(),
         cedula,
@@ -187,28 +180,26 @@ def api_registrar_paciente():
         d.get("telefono_emergencia", "").strip(),
     )
     sistema.pacientes.append(pac)
-    return jsonify({"ok": True, "mensaje": f"Paciente {pac.nombre} registrado."})
+    return jsonify({"ok": True, "mensaje": f"PACIENTE {pac.nombre} IDENTIFICADO CON C.C {pac.cedula} HA SIDO REGISTRADO."})
 
-
+# RUTA PARA ASIGNACIÓN DE TRIAGE PARA EL PACIENTE
 @app.route("/api/pacientes/triage", methods=["POST"])
 def api_triage():
     d      = request.json
     cedula = d.get("cedula", "").strip()
     tipo   = d.get("tipo_emergencia", "").strip()
     if tipo not in TIPOS_EMERGENCIA:
-        return jsonify({"ok": False, "mensaje": "Tipo de emergencia no válido."})
+        return jsonify({"ok": False, "mensaje": "EL TIPO DE EMERGENCIA NO ES VÁLIDO."})
     for p in sistema.pacientes:
         if p.cedula == cedula and p.estado == EstadoPaciente.REGISTRADO:
             p.asignar_triage(tipo)
             heapq.heappush(sistema.cola_prioridad, p)
             return jsonify({"ok": True,
-                            "mensaje": f"Triage asignado. Turno #{p.numero_turno}.",
+                            "mensaje": f"TRIAGE ASIGNADO. EL TURNO ES: #{p.numero_turno}.",
                             "turno": p.numero_turno})
-    return jsonify({"ok": False, "mensaje": "Paciente no encontrado o ya tiene triage."})
+    return jsonify({"ok": False, "mensaje": "EL PACIENTE NO HA SIDO ENCONTRADO."})
 
-
-# ── API: Cola y turnos ─────────────────────────────────────────
-
+# RUTA PARA VER LA COLA DE LOS TURNOS
 @app.route("/api/cola")
 def api_cola():
     copia = sorted(sistema.cola_prioridad)
