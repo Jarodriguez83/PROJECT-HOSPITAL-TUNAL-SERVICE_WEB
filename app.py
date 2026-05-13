@@ -1,32 +1,30 @@
 # INICIAR CON: python app.py
-"""
-app.py  –  Capa Flask del Sistema de Urgencias
-Importa la lógica desde proyecto_salud.py sin modificarla.
-Ejecutar:  python app.py   → abrir http://127.0.0.1:5000
-"""
+# EJECUTAR EN: http://127.0.0.1:5000
+# app.py -> IMPLEMENTACIÓN DE LA CAPA FLASK
 
+#IMPORTANCIÓN DE MÓDULOS 
 import heapq
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
-
+#IMPORTACIÓN DE CLASES Y CONSTANTES DESDE EL MÓDULO DEL PROYECTO
 from proyecto_salud import (
     SistemaUrgencias, Doctor, Paciente,
     EstadoDoctor, EstadoPaciente,
     TIPOS_EMERGENCIA, DESCRIPCIONES_TRIAGE,
 )
 
-app = Flask(__name__)
-app.secret_key = 'hospital_tunal_secret_2024'   # necesario para session
+app = Flask(__name__) # CREACIÓN DE LA APLICACIÓN FLASK
+app.secret_key = 'hospital_tunal_secret_2024'   #PARA USAR SESSIONS EN FLASK
 
-# Instancia global del sistema
+# INSTANCIA DEL SISTEMA DE URGENCIAS
 sistema = SistemaUrgencias()
 
-# Info de triage para la UI
+# INFORMACIÓN DEL TRIAGE PARA SIGU
 TRIAGE_BADGE = {
-    1: {"color": "#e53e3e", "label": "T1 · ROJO",     "tiempo": "Inmediato"},
-    2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "tiempo": "< 10 min"},
-    3: {"color": "#d69e2e", "label": "T3 · AMARILLO", "tiempo": "< 30 min"},
-    4: {"color": "#38a169", "label": "T4 · VERDE",    "tiempo": "< 2 h"},
-    5: {"color": "#3182ce", "label": "T5 · AZUL",     "tiempo": "< 4 h"},
+    1: {"color": "#e53e3e", "label": "T1 · ROJO",     "TIEMPO": "INMEDIATO"},
+    2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "TIEMPO": "< 10 min"},
+    3: {"color": "#d69e2e", "label": "T3 · AMARILLO", "TIEMPO": "< 30 min"},
+    4: {"color": "#38a169", "label": "T4 · VERDE",    "TIEMPO": "< 2 h"},
+    5: {"color": "#3182ce", "label": "T5 · AZUL",     "TIEMPO": "< 4 h"},
 }
 
 # Credenciales válidas
