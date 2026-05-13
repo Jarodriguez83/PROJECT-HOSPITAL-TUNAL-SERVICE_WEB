@@ -212,27 +212,27 @@ def api_cola():
         acum += p.tiempo_atencion
     return jsonify(res)
 
-
+# RUTA PARA VER LOS TURNOS EN ATENCIÓN Y ASIGNARLOS A DOCTORES DISPONIBLES
 @app.route("/api/turnos/atender", methods=["POST"])
 def api_atender():
     if not sistema.cola_prioridad:
-        return jsonify({"ok": False, "mensaje": "No hay pacientes en cola."})
+        return jsonify({"ok": False, "mensaje": "MO HAY PACIENTES EN COLA."})
     doc_libre = next(
         (d for d in sistema.doctores.values() if d.estado == EstadoDoctor.DISPONIBLE), None
     )
     if not doc_libre:
-        return jsonify({"ok": False, "mensaje": "No hay doctores disponibles."})
+        return jsonify({"ok": False, "mensaje": "NO HAY DOCTORES DISPONIBLES."})
     pac                      = heapq.heappop(sistema.cola_prioridad)
     pac.estado               = EstadoPaciente.EN_ATENCION
     doc_libre.estado         = EstadoDoctor.EN_TURNO
     doc_libre.paciente_actual= pac
     sistema.pacientes_en_atencion.append(pac)
     return jsonify({"ok": True,
-                    "mensaje": f"{pac.nombre} asignado a Dr. {doc_libre.nombre}.",
-                    "paciente": pac.nombre, "doctor": doc_libre.nombre,
-                    "turno": pac.numero_turno, "tiempo": pac.tiempo_atencion})
+                    "mensaje": f"{pac.nombre} ASIGNADO CON EL DR. {doc_libre.nombre}.",
+                    "paciente": pac.nombre, "DOCTOR": doc_libre.nombre,
+                    "turno": pac.numero_turno, "TIEMPO": pac.tiempo_atencion})
 
-
+# RUTA PARA FINALIZAR LA ATENCIÓN DE UN PACIENTE Y LIBERAR AL DOCTOR
 @app.route("/api/turnos/finalizar", methods=["POST"])
 def api_finalizar():
     cedula = request.json.get("cedula", "").strip()
@@ -246,12 +246,11 @@ def api_finalizar():
                     doc.estado          = EstadoDoctor.DISPONIBLE
                     doc.paciente_actual = None
                     break
-            return jsonify({"ok": True, "mensaje": f"Atención de {p.nombre} finalizada."})
-    return jsonify({"ok": False, "mensaje": "Paciente no encontrado en atención."})
+            return jsonify({"ok": True, "mensaje": f"ATENCIÓN DEL PACIENTE: {p.nombre} HA FINALIZADO."})
+    return jsonify({"ok": False, "mensaje": "PACIENTE NO ENCONTRADO EN ATENCIÓN."})
 
 
-# ── API: Estadísticas ──────────────────────────────────────────
-
+# RUTA PARA OBTENER ESTADÍSTICAS DEL SISTEMA (TOTAL DE PACIENTES, DOCTORES DISPONIBLES, TIEMPO PROMEDIO DE ESPERA, ETC.)
 @app.route("/api/estadisticas")
 def api_estadisticas():
     total       = len(sistema.pacientes)
@@ -271,8 +270,12 @@ def api_estadisticas():
 
 
 if __name__ == "__main__":
-    print("\n" + "═" * 55)
-    print("  🏥  HOSPITAL DEL TUNAL — Sistema de Urgencias")
-    print("  Abre tu navegador en → http://127.0.0.1:5000")
-    print("═" * 55 + "\n")
+    print(" PROYECTO - UNIVERSIDAD CATÓLICA DE COLOMBIA")
+    print(" CURSO: DISEÑO Y ANÁLISIS DE ALGORITMOS")
+    print(" DOCENTE: STEFANY TATIANA OSPINA")
+    print(" ESTUDIANTE 1: JADER SANTIAGO NIEVES TAMI - 67001539")
+    print(" ESTUDIANTE 2: JHON ALEXANDER RODRIGUEZ REDONDO - 67001483")
+    print("========================================================================")
+    print(" HOSPITAL DEL TUNAL — (SIGU) SISTEMA INTEGRAL DE GESTIÓN DE URGENCIAS")
+    print(" PARA EJECUTAR ABRIR EN EL NAVEGADOR -> http://127.0.0.1:5000")
     app.run(debug=True, port=5000)
