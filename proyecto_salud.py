@@ -9,33 +9,33 @@ class EstadoPaciente(Enum):
     FINALIZADO  = "Finalizado"
 
 class EstadoDoctor(Enum):
-    DISPONIBLE  = "Disponible"
-    EN_TURNO    = "En turno"
+    DISPONIBLE  = "DISPONIBLE"
+    EN_TURNO    = "OCUPADO"
 
 TIPOS_EMERGENCIA = {
-    # TRIAGE I - Resucitación (inmediato, vida en riesgo extremo)
+    # TRIAGE I 
     "Paro cardiorrespiratorio":      (1, 60),
     "Politraumatismo grave":         (1, 90),
-    # TRIAGE II - Emergencia (muy urgente)
+    # TRIAGE II 
     "Dificultad respiratoria severa":(2, 45),
     "ACV / Derrame cerebral":        (2, 50),
-    # TRIAGE III - Urgencia (urgente)
+    # TRIAGE III 
     "Fractura con compromiso vascular": (3, 35),
     "Dolor abdominal agudo":         (3, 30),
-    # TRIAGE IV - Menos urgente
+    # TRIAGE IV
     "Fiebre alta con convulsión":    (4, 25),
     "Herida con sangrado moderado":  (4, 20),
-    # TRIAGE V - No urgente
+    # TRIAGE V
     "Dolor leve / Malestar general": (5, 15),
     "Consulta menor (gripe, tos)":   (5, 10),
 }
 
 DESCRIPCIONES_TRIAGE = {
-    1: "TRIAGE I  - ROJO      (Resucitación) → Atención INMEDIATA",
-    2: "TRIAGE II - NARANJA   (Emergencia)   → Atención < 10 min",
-    3: "TRIAGE III- AMARILLO  (Urgente)      → Atención < 30 min",
-    4: "TRIAGE IV - VERDE     (Menos urgente)→ Atención < 2 horas",
-    5: "TRIAGE V  - AZUL      (No urgente)   → Atención < 4 horas",
+    1: "TRIAGE I  - ROJO      (RESUCITACIÓN) → ATENCIÓN INMEDIATA",
+    2: "TRIAGE II - NARANJA   (EMERGENCIA)   → ATENCIÓN MENOR A 10 min",
+    3: "TRIAGE III- AMARILLO  (URGENCIA)      → ATENCIÓN MENOR A 30 min",
+    4: "TRIAGE IV - VERDE     (MENOS URGENTE)→ ATENCIÓN MENOR A 2 horas",
+    5: "TRIAGE V  - AZUL      (NO URGENTE)   → ATENCIÓN MENOR A 4 horas",
 }
 
 class Doctor:
@@ -44,7 +44,7 @@ class Doctor:
         self.nombre      = nombre
         self.especialidad= especialidad
         self.estado      = EstadoDoctor.DISPONIBLE
-        self.paciente_actual = None   # Paciente que atiende ahora
+        self.paciente_actual = None  
     def __str__(self):
         estado_str = self.estado.value
         if self.paciente_actual:
@@ -69,7 +69,7 @@ class Paciente:
 
         self.tipo_emergencia     = None
         self.nivel_triage        = None
-        self.tiempo_atencion     = None   # minutos estimados
+        self.tiempo_atencion     = None   
         self.numero_turno        = None
 
         self._prioridad          = None
@@ -86,86 +86,83 @@ class Paciente:
         self._prioridad      = (self.nivel_triage, self.hora_registro)
 
     def __lt__(self, other):
-        """Permite comparar pacientes en el heap (por triage y hora)."""
+        # COMPARACIÓN DE PACIENTES (TRIAGE Y HORA) PARA EL HEAP DE PRIORIDAD
+        # EL HEAP ES UN MIN-HEAP, POR LO QUE UN PACIENTE CON MENOR NIVEL DE TRIAGE (MAYOR PRIORIDAD) DEBE SER "MENOR" QUE OTRO CON NIVEL MAYOR
         return self._prioridad < other._prioridad
 
     def resumen(self):
         linea = "─" * 55
         print(linea)
-        print(f"  Turno N°   : {self.numero_turno}")
-        print(f"  Nombre     : {self.nombre}")
-        print(f"  Cédula     : {self.cedula}")
-        print(f"  Emergencia : {self.tipo_emergencia}")
+        print(f"  TURNO N°   : {self.numero_turno}")
+        print(f"  NOMBRE     : {self.nombre}")
+        print(f"  CÉDULA     : {self.cedula}")
+        print(f"  EMERGENCIA : {self.tipo_emergencia}")
         print(f"  {DESCRIPCIONES_TRIAGE[self.nivel_triage]}")
-        print(f"  Tiempo est.: {self.tiempo_atencion} min")
-        print(f"  Estado     : {self.estado.value}")
+        print(f"  TIEMPO ESTIMADO: {self.tiempo_atencion} min")
+        print(f"  ESTADO     : {self.estado.value}")
         print(linea)
 
 class SistemaUrgencias:
     def __init__(self):
         self.doctores: dict[str, Doctor]  = {}
         self.pacientes: list[Paciente]    = []
-        self.cola_prioridad: list         = []   # min-heap
+        self.cola_prioridad: list         = []   
         self.pacientes_en_atencion: list[Paciente] = []
         self.pacientes_finalizados: list[Paciente] = []
-
-    # ── SECCIÓN DOCTORES ──────────────────────────────────────
 
     def ver_doctores(self):
         titulo("DOCTORES REGISTRADOS")
         if not self.doctores:
-            print("  No hay doctores registrados.")
+            print(" NO HAY DOCTORES REGISTRADOS.")
             return
         for doc in self.doctores.values():
             print(f"  {doc}")
 
     def agregar_doctor(self):
         titulo("AGREGAR DOCTOR")
-        doctor_id   = input("  ID del doctor    : ").strip()
+        doctor_id   = input("  ID DEL DOCTOR: ").strip()
         if doctor_id in self.doctores:
-            print("  ⚠ Ya existe un doctor con ese ID.")
+            print("  YA EXISTE UN DOCTOR CON ESE ID.")
             return
-        nombre      = input("  Nombre completo  : ").strip()
-        especialidad= input("  Especialidad     : ").strip()
+        nombre      = input(" NOMBRE COMPLETO: ").strip()
+        especialidad= input("  ESPECIALIDAD: ").strip()
         doc = Doctor(doctor_id, nombre, especialidad)
         self.doctores[doctor_id] = doc
-        print(f"\n  ✔ Doctor {nombre} agregado correctamente.")
+        print(f"\n DOCTOR {nombre} HA SIDO AGREGADO CON ÉXITO.")
 
     def eliminar_doctor(self):
         titulo("ELIMINAR DOCTOR")
         self.ver_doctores()
-        doctor_id = input("\n  ID del doctor a eliminar: ").strip()
+        doctor_id = input("\n ID DEL DOCTOR A ELIMINAR: ").strip()
         if doctor_id not in self.doctores:
-            print("  ⚠ Doctor no encontrado.")
+            print(" DOCTOR NO ENCONTRADO.")
             return
         doc = self.doctores[doctor_id]
         if doc.estado == EstadoDoctor.EN_TURNO:
-            print(f"  ⚠ El doctor {doc.nombre} está EN TURNO. No se puede eliminar.")
+            print(f" EL DOCTOR {doc.nombre} SE ENCUENTRA EN TURNO. NO SE PUEDE ELIMINAR.")
             return
         del self.doctores[doctor_id]
-        print(f"  ✔ Doctor {doc.nombre} eliminado.")
-
-    # ── SECCIÓN PACIENTES ─────────────────────────────────────
+        print(f" DOCTOR {doc.nombre} HA SIDO ELIMINADO CON ÉXITO.")
 
     def registrar_paciente(self):
         titulo("REGISTRAR PACIENTE")
-        nombre   = input("  Nombre completo        : ").strip()
-        cedula   = input("  Cédula                 : ").strip()
-        # Verificar cédula duplicada
+        nombre   = input(" NOMBRE COMPLETO: ").strip()
+        cedula   = input(" CÉDULA: ").strip()
+        # VERIFICACIÓN DE CÉDULA DUPLICADA
         for p in self.pacientes:
             if p.cedula == cedula:
-                print("  ⚠ Ya existe un paciente con esa cédula.")
+                print(" ESTÁ CÉDULA YA HA SIDO REGISTRADA POR UN PACIENTE ANTERIOR.")
                 return
-        telefono = input("  Teléfono               : ").strip()
-        sexo     = input("  Sexo (M/F)             : ").strip().upper()
-        eps      = input("  EPS                    : ").strip()
-        fnac     = input("  Fecha de nacimiento    : ").strip()
-        tel_emer = input("  Teléfono de emergencia : ").strip()
+        telefono = input(" TELÉFONO: ").strip()
+        sexo     = input("  SEXO (M/F): ").strip().upper()
+        eps      = input("  EPS: ").strip()
+        fnac     = input("  FECHA NACIMIENTO: ").strip()
+        tel_emer = input("  TEL. DE EMERGENCIA: ").strip()
 
         pac = Paciente(nombre, cedula, telefono, sexo, eps, fnac, tel_emer)
         self.pacientes.append(pac)
-        print(f"\n  ✔ Paciente {nombre} registrado. Estado: {pac.estado.value}")
-        print("  → Recuerde realizar el TRIAGE para asignar turno.")
+        print(f"\n PACIENTE {nombre} REGISTRADO CON ÉXITO. ESTADO: {pac.estado.value}")
+        print(" REALIZAR EL TRIAGE PARA ASIGNACIÓN DE TURNO.")
 
     def realizar_triage(self):
         titulo("REALIZAR TRIAGE")
@@ -173,24 +170,24 @@ class SistemaUrgencias:
         sin_triage = [p for p in self.pacientes
                       if p.estado == EstadoPaciente.REGISTRADO]
         if not sin_triage:
-            print("  No hay pacientes pendientes de triage.")
+            print(" NO HAY PACIENTES PENDIENTES POR TRIAGE.")
             return
 
-        print("  Pacientes sin triage:")
+        print(" PACIENTES SIN TRIAGE:")
         for i, p in enumerate(sin_triage, 1):
-            print(f"    {i}. {p.nombre} (Cédula: {p.cedula})")
+            print(f"    {i}. {p.nombre} (CÉDULA: {p.cedula})")
 
         try:
-            idx = int(input("\n  Seleccione número de paciente: ")) - 1
+            idx = int(input("\n  SELECCIONE NÚMERO DEL PACIENTE: ")) - 1
             if idx < 0 or idx >= len(sin_triage):
-                print("  ⚠ Opción inválida.")
+                print(" OPCIÓN INVÁLIDA.")
                 return
         except ValueError:
-            print("  ⚠ Ingrese un número válido.")
+            print("  INGRESE UN NÚMERO VÁLIDO.")
             return
 
         pac = sin_triage[idx]
-        print(f"\n  Paciente: {pac.nombre}")
+        print(f"\n  PACIENTE: {pac.nombre}")
         print("\n  TIPOS DE EMERGENCIA DISPONIBLES:")
         tipos = list(TIPOS_EMERGENCIA.keys())
         for i, t in enumerate(tipos, 1):
@@ -198,19 +195,19 @@ class SistemaUrgencias:
             print(f"    {i:>2}. {t:<40} | {DESCRIPCIONES_TRIAGE[nivel][:30]}")
 
         try:
-            elec = int(input("\n  Seleccione tipo de emergencia: ")) - 1
+            elec = int(input("\n  SELECCIONE EL TIPO DE EMERGENCIA: ")) - 1
             if elec < 0 or elec >= len(tipos):
-                print("  ⚠ Opción inválida.")
+                print("  OPCIÓN INVÁLIDA.")
                 return
         except ValueError:
-            print("  ⚠ Ingrese un número válido.")
+            print("  INGRESE UN NÚMERO VÁLIDO.")
             return
 
         tipo_seleccionado = tipos[elec]
         pac.asignar_triage(tipo_seleccionado)
         heapq.heappush(self.cola_prioridad, pac)
 
-        print(f"\n  ✔ Triage asignado correctamente:")
+        print(f"\n  TRIAGE ASIGNADO CON ÉXITO")
         pac.resumen()
 
     def ver_pacientes(self):
@@ -233,23 +230,22 @@ class SistemaUrgencias:
                 extra = ""
                 if p.tipo_emergencia:
                     extra = f"| T{p.nivel_triage} - {p.tipo_emergencia[:30]}"
-                turno = f"Turno #{p.numero_turno}" if p.numero_turno else "Sin turno"
+                turno = f"TURNO #{p.numero_turno}" if p.numero_turno else "SIN TURNO"
                 print(f"  [{turno}] {p.nombre} {extra}")
 
-        listar(registrados,  "📋 REGISTRADOS (sin triage)")
-        listar(en_espera,    "⏳ EN ESPERA (cola)")
+        listar(registrados,  "📋 REGISTRADOS (SIN TRIAGE)")
+        listar(en_espera,    "⏳ EN ESPERA (EN COLA)")
         listar(en_atencion,  "🩺 EN ATENCIÓN")
         listar(finalizados,  "✅ FINALIZADOS")
-
-    # ── SECCIÓN TURNOS ────────────────────────────────────────
-
+# FUNCIÓN PARA VER LA COLA DE TURNOS ORDENADA POR PRIORIDAD (TRIAGE Y HORA DE REGISTRO)
     def ver_cola_turnos(self):
-        titulo("COLA DE TURNOS (por prioridad)")
+        titulo("COLA DE TURNOS (POR PRIORIDAD)")
         if not self.cola_prioridad:
-            print("  La cola está vacía.")
+            print("  LA COLA ESTÁ VACÍA.")
             return
 
-        # Crear copia ordenada sin modificar el heap
+# COPIA DE LA COLA DE PRIORIDAD PARA MOSTRARLA ORDENADA SIN MODIFICAR EL HEAP ORIGINAL
+# EL HEAP ES UN MIN-HEAP, POR LO QUE LOS PACIENTES CON MAYOR PRIORIDAD (MENOR NIVEL DE TRIAGE) APARECERÁN PRIMERO
         copia = sorted(self.cola_prioridad)
         print(f"  {'#':<5} {'Turno':<8} {'Nombre':<25} {'Emergencia':<35} {'Triage'}")
         print(f"  {'─'*90}")
