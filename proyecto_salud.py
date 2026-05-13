@@ -1,51 +1,30 @@
-"""
-╔══════════════════════════════════════════════════════════════╗
-║         SISTEMA DE GESTIÓN DE URGENCIAS                      ║
-║         Hospital del Tunal - Bogotá, Colombia                ║
-║         Asignación Óptima de Turnos y Triage                 ║
-╚══════════════════════════════════════════════════════════════╝
-"""
-
 import heapq
 from datetime import datetime
 from enum import Enum
 
-
-# ─────────────────────────────────────────────
-#  ENUMERACIONES Y CONSTANTES
-# ─────────────────────────────────────────────
-
 class EstadoPaciente(Enum):
-    REGISTRADO  = "Registrado (sin triage)"
-    EN_ESPERA   = "En espera (cola)"
+    REGISTRADO  = "Registrado"
+    EN_ESPERA   = "En espera"
     EN_ATENCION = "En atención"
     FINALIZADO  = "Finalizado"
-
 
 class EstadoDoctor(Enum):
     DISPONIBLE  = "Disponible"
     EN_TURNO    = "En turno"
 
-
-# 10 tipos de emergencia clasificados en 5 niveles de triage
-# Formato: "Nombre emergencia": (nivel_triage, tiempo_atencion_minutos)
 TIPOS_EMERGENCIA = {
     # TRIAGE I - Resucitación (inmediato, vida en riesgo extremo)
     "Paro cardiorrespiratorio":      (1, 60),
     "Politraumatismo grave":         (1, 90),
-
     # TRIAGE II - Emergencia (muy urgente)
     "Dificultad respiratoria severa":(2, 45),
     "ACV / Derrame cerebral":        (2, 50),
-
     # TRIAGE III - Urgencia (urgente)
     "Fractura con compromiso vascular": (3, 35),
     "Dolor abdominal agudo":         (3, 30),
-
     # TRIAGE IV - Menos urgente
     "Fiebre alta con convulsión":    (4, 25),
     "Herida con sangrado moderado":  (4, 20),
-
     # TRIAGE V - No urgente
     "Dolor leve / Malestar general": (5, 15),
     "Consulta menor (gripe, tos)":   (5, 10),
@@ -59,11 +38,6 @@ DESCRIPCIONES_TRIAGE = {
     5: "TRIAGE V  - AZUL      (No urgente)   → Atención < 4 horas",
 }
 
-
-# ─────────────────────────────────────────────
-#  CLASE DOCTOR
-# ─────────────────────────────────────────────
-
 class Doctor:
     def __init__(self, doctor_id: str, nombre: str, especialidad: str):
         self.doctor_id   = doctor_id
@@ -71,7 +45,6 @@ class Doctor:
         self.especialidad= especialidad
         self.estado      = EstadoDoctor.DISPONIBLE
         self.paciente_actual = None   # Paciente que atiende ahora
-
     def __str__(self):
         estado_str = self.estado.value
         if self.paciente_actual:
@@ -79,14 +52,8 @@ class Doctor:
         return (f"[{self.doctor_id}] Dr(a). {self.nombre} | "
                 f"{self.especialidad} | {estado_str}")
 
-
-# ─────────────────────────────────────────────
-#  CLASE PACIENTE
-# ─────────────────────────────────────────────
-
 class Paciente:
-    _contador = 1   # Para asignar número de turno único
-
+    _contador = 1   
     def __init__(self, nombre: str, cedula: str, telefono: str,
                  sexo: str, eps: str, fecha_nacimiento: str,
                  telefono_emergencia: str):
@@ -100,13 +67,11 @@ class Paciente:
         self.estado              = EstadoPaciente.REGISTRADO
         self.hora_registro       = datetime.now()
 
-        # Datos de triage (se completan después)
         self.tipo_emergencia     = None
         self.nivel_triage        = None
         self.tiempo_atencion     = None   # minutos estimados
         self.numero_turno        = None
 
-        # Para la cola de prioridad: (nivel_triage, hora_registro, objeto)
         self._prioridad          = None
 
     def asignar_triage(self, tipo_emergencia: str):
@@ -135,11 +100,6 @@ class Paciente:
         print(f"  Tiempo est.: {self.tiempo_atencion} min")
         print(f"  Estado     : {self.estado.value}")
         print(linea)
-
-
-# ─────────────────────────────────────────────
-#  SISTEMA PRINCIPAL
-# ─────────────────────────────────────────────
 
 class SistemaUrgencias:
     def __init__(self):
@@ -532,3 +492,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# EN QUE ME BASE PARA LAS DISTRIBUCIONES  
+# QUE MEJORAS TUVIMOS 
+# VARIABLES
