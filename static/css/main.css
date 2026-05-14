@@ -201,12 +201,14 @@ nav { flex: 1; padding: 10px 0; }
 .stat-card.c-orange .val { color: var(--orange); }
 .stat-card.c-purple .val { color: var(--purple); }
 
+
 .card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .card-header {
@@ -285,7 +287,7 @@ select option { background: var(--bg2); }
 }
 
 .btn:active { transform: scale(.97); }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); margin: 10px;}
 .btn-primary:hover { background: var(--accent2); }
 .btn-success { background: rgba(63,185,80,.15); color: var(--green); border-color: rgba(63,185,80,.35); }
 .btn-success:hover { background: rgba(63,185,80,.25); }
@@ -300,7 +302,7 @@ select option { background: var(--bg2); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 
 thead th {
-  text-align: left;
+  text-align: center;
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 600;
