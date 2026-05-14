@@ -5,7 +5,6 @@ async function intentarLogin() {
   const form  = document.getElementById('login-form');
   const btn   = document.getElementById('login-btn');
 
-  /* Validación de campos vacíos antes de llamar al servidor */
   if (!user || !pass) {
     mostrarError(
       !user && !pass ? 'POR FAVOR INGRESE USUARIO Y CONTRASEÑA.' :
@@ -16,7 +15,6 @@ async function intentarLogin() {
     return;
   }
 
-  /* Estado de carga */
   btn.disabled     = true;
   btn.textContent  = 'VERIFICANDO...';
 
@@ -35,12 +33,12 @@ async function intentarLogin() {
     } else {
       mostrarError(data.mensaje || 'Usuario o contraseña incorrectos.', form);
       btn.disabled    = false;
-      btn.textContent = 'Iniciar sesión';
+      btn.textContent = 'INICIAR SESIÓN';
     }
   } catch {
-    mostrarError('Error de conexión. Intente nuevamente.', form);
+    mostrarError('ERROR DE CONEXIÓN. INTENTE NUEVAMENTE.', form);
     btn.disabled    = false;
-    btn.textContent = 'Iniciar sesión';
+    btn.textContent = 'INICIAR SESIÓN';
   }
 }
 
@@ -49,17 +47,15 @@ function mostrarError(msg, form) {
   document.getElementById('login-error-msg').textContent = msg;
   errEl.classList.add('show');
   form.classList.remove('shake');
-  void form.offsetWidth;   /* reflow para reiniciar la animación */
+  void form.offsetWidth;  
   form.classList.add('shake');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  /* Enter en cualquier campo del login */
   ['login-user', 'login-pass'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
       if (e.key === 'Enter') intentarLogin();
     });
-    /* Limpiar error al volver a escribir */
     document.getElementById(id).addEventListener('input', () =>
       document.getElementById('login-error').classList.remove('show')
     );
