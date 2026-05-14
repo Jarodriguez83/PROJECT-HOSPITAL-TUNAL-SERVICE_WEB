@@ -1,5 +1,9 @@
-# 🏥 Sistema de Gestión de Urgencias — Hospital del Tunal
+<div align="center">
 
+# SIGU - HOSPITAL DEL TUNAL, BOGOTÁ
+## SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS
+
+</div>
 <div align="center">
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -8,8 +12,8 @@
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-**Sistema web de asignación óptima de turnos y clasificación por triage**  
-para el servicio de urgencias del Hospital del Tunal, Bogotá, Colombia.
+**SISTEMA WEB DE ASIGNACIÓN ÓPTIMA DE TURNOS Y CLASIFICACIÓN DE PACIENTES POR TRIAGE**
+para el servicio de urgencias del Hospital del Tunal, Bogotá.
 
 [Descripción](#-descripción) · [Arquitectura](#-arquitectura) · [Instalación](#-instalación) · [Uso](#-uso-del-sistema) · [API](#-referencia-de-la-api-rest) · [Estructura](#-estructura-del-proyecto)
 
@@ -17,7 +21,7 @@ para el servicio de urgencias del Hospital del Tunal, Bogotá, Colombia.
 
 ---
 
-## 📋 Descripción
+## 📋 DESCRIPCIÓN
 
 El **Sistema de Gestión de Urgencias** es una aplicación web diseñada para el Hospital del Tunal (nivel III, localidad de Tunjuelito), cuyo objetivo principal es **minimizar el tiempo de espera** entre la llegada del paciente y su atención por un profesional de salud, mediante la asignación óptima de turnos basada en prioridad médica.
 
@@ -27,7 +31,7 @@ El sistema implementa el **protocolo de Triage de Manchester** en 5 niveles de c
 
 ---
 
-## ✨ Funcionalidades
+## ✨ FUNCIONALIDADES
 
 | Módulo | Descripción |
 |---|---|
@@ -42,7 +46,7 @@ El sistema implementa el **protocolo de Triage de Manchester** en 5 niveles de c
 
 ---
 
-## 🏗 Arquitectura
+## 🏗 ARQUITECTURA
 
 El proyecto está organizado en **tres capas independientes** que se comunican a través de una API REST:
 
@@ -86,7 +90,7 @@ def __lt__(self, other):
 
 ---
 
-## 🩺 Clasificación de Triage
+## 🩺 CLASIFICACIÓN DE TRIAGE
 
 El sistema implementa los **5 niveles del Triage de Manchester**, cada uno con sus tipos de emergencia, tiempo de atención estimado y código de color:
 
@@ -100,7 +104,7 @@ El sistema implementa los **5 niveles del Triage de Manchester**, cada uno con s
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 ESTRUCTURA DEL PROYECTO
 
 ```
 hospital/
@@ -135,7 +139,7 @@ hospital/
 
 ---
 
-## ⚙️ Instalación
+## ⚙️ INSTALACIÓN
 
 ### Requisitos previos
 
@@ -208,7 +212,7 @@ El sistema redirigirá automáticamente al login.
 
 ---
 
-## 🔐 Credenciales de acceso
+## 🔐 CREDENCIALES DE ACCESO
 
 | Campo | Valor |
 |---|---|
@@ -219,7 +223,7 @@ El sistema redirigirá automáticamente al login.
 
 ---
 
-## 🚀 Uso del sistema
+## 🚀 USO DEL SISTEMA
 
 El flujo normal de operación sigue estos pasos:
 
@@ -249,7 +253,7 @@ REGISTRADO  ──(triage asignado)──►  EN_ESPERA  ──(doctor disponibl
 
 ---
 
-## 🔌 Referencia de la API REST
+## 🔌 REFERENCIA DE LA API REST
 
 Todos los endpoints devuelven `Content-Type: application/json`.
 
@@ -334,7 +338,7 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 ---
 
-## 🧩 Modelo de datos
+## 🧩 MODELO DE DATOS
 
 ### Clase `Paciente`
 
@@ -366,7 +370,7 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 ---
 
-## 🖥 Interfaz de usuario
+## 🖥 INTERFAZ DE USUARIO
 
 La interfaz es una **Single Page Application (SPA)** que no recarga la página al navegar. Toda la comunicación con el servidor se realiza mediante `fetch()` asíncrono.
 
@@ -398,7 +402,7 @@ La interfaz es una **Single Page Application (SPA)** que no recarga la página a
 
 ---
 
-## 🔒 Seguridad y consideraciones
+## 🔒 SEGURIDAD Y CONSIDERACIONES
 
 - La autenticación usa **Flask sessions** con `secret_key`. Para producción se recomienda configurar la clave desde variables de entorno.
 - Todos los endpoints del dashboard están protegidos: sin sesión activa, Flask redirige al login.
@@ -407,7 +411,7 @@ La interfaz es una **Single Page Application (SPA)** que no recarga la página a
 
 ---
 
-## 🛠 Posibles mejoras futuras
+## 🛠 MEJORAS FUTURAS
 
 - [ ] Persistencia de datos con base de datos (SQLAlchemy + PostgreSQL)
 - [ ] Historial de atenciones por paciente y doctor
@@ -420,13 +424,13 @@ La interfaz es una **Single Page Application (SPA)** que no recarga la página a
 
 ---
 
-## 👥 Autores
+## 👥 AUTORES
 
 Desarrollado como proyecto académico para la asignatura de **Estructuras de Datos y Algoritmos**, aplicado al contexto hospitalario del **Hospital del Tunal**, localidad de Tunjuelito, Bogotá D.C., Colombia.
 
 ---
 
-## 📄 Licencia
+## 📄 LICENCIA
 
 Este proyecto es de uso académico e institucional. Todos los derechos reservados al equipo de desarrollo y al Hospital del Tunal.
 
