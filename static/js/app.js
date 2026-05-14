@@ -13,13 +13,13 @@ let currentTab = 'en_espera';
 
 /*NAVEGACIÓN*/
 const SECTION_TITLES = {
-  dashboard: ['Dashboard',          'Resumen del sistema en tiempo real'],
-  doctores:  ['Doctores',           'Gestión del personal médico'],
-  registrar: ['Registrar Paciente', 'Ingreso de nuevos pacientes'],
-  triage:    ['Asignar Triage',     'Clasificación y priorización'],
-  pacientes: ['Ver Pacientes',      'Listado por estado'],
-  cola:      ['Cola de Turnos',     'Orden de atención por prioridad'],
-  atencion:  ['En Atención',        'Pacientes siendo atendidos ahora'],
+  dashboard: ['SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS',          'RESUMEN DEL SISTEMA EN TIEMPO REAL'],
+  doctores:  ['SECCIÓN: DOCTORES',           'GESTIÓN DEL PERSONAL MÉDICO Y SU DISPONIBILIDAD'],
+  registrar: ['SECCIÓN: REGISTRAR PACIENTE', 'INGRESO DE NUEVOS PACIENTES AL HOSPITAL DEL TUNAL'],
+  triage:    ['SECCIÓN: ASIGNAR TRIAGE',     'PRIORIZACIÓN Y ASIGNACIÓN DE TRIAGE A LOS PACIENTES'],
+  pacientes: ['SECCIÓN: VER PACIENTES',      'LISTADO DE LOS PACIENTES POR ESTADO'],
+  cola:      ['SECCIÓN: COLA DE TURNOS',     'ORDEN DE ATENCIÓN DE LOS PACIENTES EN ESPERA SEGÚN LA PRIORIDAD'],
+  atencion:  ['SECCIÓN: PACIENTES EN ATENCIÓN',        'PACIENTES QUE ESTÁN SIENDO ATENDIDOS ACTUALMENTE POR LOS DOCTORES'],
 };
 
 function goTo(id, el) {
