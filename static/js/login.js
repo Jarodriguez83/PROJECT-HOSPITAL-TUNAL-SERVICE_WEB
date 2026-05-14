@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════
-   login.js  —  Lógica de inicio de sesión
-   Valida credenciales contra el servidor Flask
-═══════════════════════════════════════════ */
-
 async function intentarLogin() {
   const user  = document.getElementById('login-user').value.trim();
   const pass  = document.getElementById('login-pass').value;
@@ -13,9 +8,9 @@ async function intentarLogin() {
   /* Validación de campos vacíos antes de llamar al servidor */
   if (!user || !pass) {
     mostrarError(
-      !user && !pass ? 'Por favor ingrese usuario y contraseña.' :
-      !user          ? 'El campo de usuario está vacío.'         :
-                       'El campo de contraseña está vacío.',
+      !user && !pass ? 'POR FAVOR INGRESE USUARIO Y CONTRASEÑA.' :
+      !user          ? 'EL CAMPO DE USUARIO ESTÁ VACÍO.'         :
+                       'EL CAMPO DE CONTRASEÑA ESTÁ VACÍO.',
       form
     );
     return;
@@ -23,7 +18,7 @@ async function intentarLogin() {
 
   /* Estado de carga */
   btn.disabled     = true;
-  btn.textContent  = 'Verificando...';
+  btn.textContent  = 'VERIFICANDO...';
 
   try {
     const res  = await fetch('/login', {
