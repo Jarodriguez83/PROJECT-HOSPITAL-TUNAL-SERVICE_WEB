@@ -109,8 +109,8 @@ async function loadDoctores() {
           ? `<span style="font-size:11px;color:var(--text2)">🧑‍🤝‍🧑 ${d.paciente}</span>`
           : '<span></span>'}
         ${d.disponible
-          ? `<button class="btn btn-danger btn-sm" onclick="eliminarDoctor('${d.id}')">Eliminar</button>`
-          : '<span class="badge badge-warn">En turno</span>'}
+          ? `<button class="btn btn-danger btn-sm" onclick="eliminarDoctor('${d.id}')">ELIMINAR</button>`
+          : '<span class="badge badge-warn">EN TURNO</span>'}
       </div>
     </div>
   `).join('');
@@ -162,7 +162,7 @@ function limpiarFormPaciente() {
 /* TRIAGE */ 
 function buildTriageSelect() {
   const sel = document.getElementById('triage-tipo');
-  sel.innerHTML = '<option value="">Seleccionar emergencia...</option>';
+  sel.innerHTML = '<option value="">SELECCIONAR EMERGENCIA...</option>';
   TIPOS_EMERGENCIA.forEach(t => {
     const opt = document.createElement('option');
     opt.value       = t.nombre;
@@ -205,7 +205,7 @@ async function asignarTriage() {
   const cedula          = document.getElementById('triage-paciente').value;
   const tipo_emergencia = document.getElementById('triage-tipo').value;
   if (!cedula || !tipo_emergencia) {
-    toast('Selecciona paciente y tipo de emergencia.', false); return;
+    toast('SELECCIONA UN PACIENTE Y UN TIPO DE EMERGENCIA.', false); return;
   }
   const r = await api('/api/pacientes/triage', { cedula, tipo_emergencia });
   toast(r.mensaje, r.ok);
@@ -230,7 +230,7 @@ async function loadPacientesTab() {
   const tbody = document.querySelector('#tbl-pacientes tbody');
   if (!lista.length) {
     tbody.innerHTML = `<tr><td colspan="8">
-      <div class="empty"><div class="em-icon">📭</div><p>Sin pacientes en esta categoría</p></div>
+      <div class="empty"><div class="em-icon">📭</div><p>SIN PACIENTES EN ESTA CATEGORÍA</p></div>
     </td></tr>`;
     return;
   }
@@ -375,3 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 15000);
 });
+
+/* CERRAR SESIÓN */
+document.getElementById('btn-logout').addEventListener('click', () => { window.location.href = '/logout'; });
