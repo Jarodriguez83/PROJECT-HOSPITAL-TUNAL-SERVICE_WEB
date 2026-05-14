@@ -3,99 +3,80 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hospital del Tunal · Acceso</title>
+  <title>LOGIN - HOSPITAL EL TUNAL</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="shortcut icon" href="https://w7.pngwing.com/pngs/462/783/png-transparent-star-of-life-emergency-medical-services-emergency-medical-technician-paramedic-star-of-life-angle-text-logo-thumbnail.png" type="image/x-icon">
 </head>
 <body>
 
   <div id="login-overlay">
 
-    <!-- ══════════════════════════════════════════
-         LADO IZQUIERDO — espacio para imagen
-    ══════════════════════════════════════════ -->
+    <!-- PARTE IZQUIERDA: FOTOGRAFÍA DEL HOSPITAL -->
     <div class="login-left">
       <div class="login-left-inner">
-        <!--
-          Para mostrar tu imagen institucional, reemplaza este bloque por:
-          <img src="{{ url_for('static', filename='img/tu-imagen.jpg') }}"
-               alt="Hospital del Tunal"/>
-        -->
-        <div class="img-placeholder-icon">🏥</div>
-        <div class="img-placeholder-label">
-          Espacio reservado para imagen institucional<br/>
-          <small style="font-size:11px;opacity:.6">(reemplaza con tu &lt;img&gt;)</small>
-        </div>
+        <img src="https://www.semana.com/resizer/v2/A5Q34NTTJVCJVCGN3RWO7CRCLY.jpg?auth=2fa93d45e348d60124fd99d786197ec68f15f3e584cd73cbd38b958eb1d280dc&smart=true&quality=75&width=1280&height=1280" alt="HospitalTunal">
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
-         LADO DERECHO — formulario de acceso
-    ══════════════════════════════════════════ -->
+    <!-- PARTE DERECHA: FORMULARIO DE ACCESO -->
     <div class="login-right">
       <div class="login-box">
-
-        <!-- Encabezado -->
         <div class="login-header">
-          <span class="login-cross">🏥</span>
-          <h1>Hospital del Tunal</h1>
-          <span class="login-sub">Sistema de Gestión de Urgencias · Bogotá</span>
+          <i class="fa fa-heartbeat" style="font-size:48px;color:red; margin-bottom: 22px;" ></i>
+          <h1>HOSPITAL DEL TUNAL</h1>
+          <h2>SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS</h2>
+          <span class="login-sub">UNIVERSIDAD CATÓLICA DE COLOMBIA</span>
         </div>
 
-        <!-- Mensaje de bienvenida -->
         <div class="login-welcome">
-          👋 Bienvenido al sistema de urgencias.<br/>
-          Por favor ingrese sus credenciales para continuar.
+          BIENVENIDO AL SISTEMA SIGU.<br/>
+          INGRESE LAS CREDENCIALES PARA CONTINUAR.
         </div>
 
-        <!-- Formulario -->
         <div class="login-form" id="login-form">
-
           <div class="login-field">
-            <label for="login-user">Usuario</label>
+            <label for="login-user">USUARIO:</label>
             <input
               id="login-user"
               type="text"
-              placeholder="Ingrese su usuario"
+              placeholder="INGRESE SU USUARIO"
               autocomplete="username"
               spellcheck="false"
             />
           </div>
 
           <div class="login-field">
-            <label for="login-pass">Contraseña</label>
+            <label for="login-pass">CONTRASEÑA:</label>
             <input
               id="login-pass"
               type="password"
-              placeholder="Ingrese su contraseña"
+              placeholder="INGRESE SU CONTRASEÑA"
               autocomplete="current-password"
             />
           </div>
 
-          <!-- Mensaje de error -->
           <div class="login-error" id="login-error">
             <span>⚠️</span>
-            <span id="login-error-msg">Usuario o contraseña incorrectos.</span>
+            <span id="login-error-msg">USUARIO O CONTRASEÑA INCORRECTOS.</span>
           </div>
 
           <button class="login-btn" id="login-btn" onclick="intentarLogin()">
-            Iniciar sesión
+            INICIAR SESIÓN
           </button>
-
-        </div><!-- /login-form -->
-
-        <!-- Nota al pie -->
-        <div class="login-footer-note">
-          Sistema restringido al personal autorizado del Hospital del Tunal.<br/>
-          Solo urgencias — operación 24 horas.
         </div>
-
-      </div><!-- /login-box -->
-    </div><!-- /login-right -->
-
-  </div><!-- /login-overlay -->
-
+        
+        <div class="login-footer-note">
+          <strong>SISTEMA RESTRINGIDO SOLO PARA PERSONAL AUTORIZADO.</strong><br/>
+          <strong>DESARROLLADO POR:  </strong><br/>
+          JHON ALEXANDER RODRIGUEZ <br/>
+          JADER SANTIAGO NIEVES TAMI <br/>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 
 </body>
