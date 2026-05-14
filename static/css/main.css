@@ -159,7 +159,7 @@ nav { flex: 1; padding: 10px 0; }
 .content { padding: 28px; flex: 1; }
 
 
-.section { display: none; }
+.section { display: none;}
 .section.active { display: block; }
 
 
@@ -201,6 +201,9 @@ nav { flex: 1; padding: 10px 0; }
 .stat-card.c-orange .val { color: var(--orange); }
 .stat-card.c-purple .val { color: var(--purple); }
 
+#sec-registrar { 
+  margin-left: 15%;
+}
 
 .card {
   background: var(--bg2);
@@ -222,6 +225,25 @@ nav { flex: 1; padding: 10px 0; }
 
 .card-header h3 { font-size: 14px; font-weight: 600; }
 .card-body { padding: 20px; }
+
+#card-levels-triage div{
+  align-items: center;
+  max-width: 400px;
+}
+
+#btn-view-pacients button{
+  margin-left: 8%;
+  font-size: 15px;
+}
+
+.btns-register-pacient button{
+  align-items: center;
+  display: inline-block;
+  gap: 6px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+
+}
 
 .two-col {
   display: grid;
@@ -287,7 +309,7 @@ select option { background: var(--bg2); }
 }
 
 .btn:active { transform: scale(.97); }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); margin: 10px;}
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); margin: 5px; text-align: center;}
 .btn-primary:hover { background: var(--accent2); }
 .btn-success { background: rgba(63,185,80,.15); color: var(--green); border-color: rgba(63,185,80,.35); }
 .btn-success:hover { background: rgba(63,185,80,.25); }
