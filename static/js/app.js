@@ -1,12 +1,3 @@
-/* ═══════════════════════════════════════════
-   app.js  —  Lógica principal del sistema
-   Hospital del Tunal · Urgencias
-═══════════════════════════════════════════ */
-
-/* ──────────────────────────────────────────
-   Constantes de triage (inyectadas por Flask
-   en index.html como variable global)
-────────────────────────────────────────── */
 const TRIAGE_BADGE_CLASS = {
   1: 'badge-t1', 2: 'badge-t2', 3: 'badge-t3',
   4: 'badge-t4', 5: 'badge-t5',
@@ -18,12 +9,9 @@ const TRIAGE_LABEL = {
   5: '🔵 T5 · AZUL',
 };
 
-/* Estado del tab activo en "Ver Pacientes" */
 let currentTab = 'en_espera';
 
-/* ══════════════════════════════
-   NAVEGACIÓN
-══════════════════════════════ */
+/*NAVEGACIÓN*/
 const SECTION_TITLES = {
   dashboard: ['Dashboard',          'Resumen del sistema en tiempo real'],
   doctores:  ['Doctores',           'Gestión del personal médico'],
@@ -60,9 +48,7 @@ function refreshAll() {
   refreshSection(active.id.replace('sec-', ''));
 }
 
-/* ══════════════════════════════
-   RELOJ
-══════════════════════════════ */
+/*RELOJ*/
 function updateClock() {
   document.getElementById('topbar-clock').textContent =
     new Date().toLocaleTimeString('es-CO', {
@@ -70,9 +56,7 @@ function updateClock() {
     });
 }
 
-/* ══════════════════════════════
-   TOAST
-══════════════════════════════ */
+/* TOAST PARA NOTIFICACIONES DE ERROR */
 let _toastTimer;
 
 function toast(msg, ok = true) {
@@ -84,9 +68,7 @@ function toast(msg, ok = true) {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-/* ══════════════════════════════
-   API helper
-══════════════════════════════ */
+/* API PARA REALIZAR PETICIONES HTTP */
 async function api(url, body = null) {
   const opts = body
     ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
@@ -95,9 +77,7 @@ async function api(url, body = null) {
   return r.json();
 }
 
-/* ══════════════════════════════
-   ESTADÍSTICAS
-══════════════════════════════ */
+/* ESTADISTICAS */
 async function loadStats() {
   const d = await api('/api/estadisticas');
   document.getElementById('st-total').textContent       = d.total;
@@ -108,21 +88,19 @@ async function loadStats() {
   document.getElementById('st-docs-turno').textContent  = d.docs_turno;
 }
 
-/* ══════════════════════════════
-   DOCTORES
-══════════════════════════════ */
+/* DOCTORES */
 async function loadDoctores() {
   const docs = await api('/api/doctores');
   const grid = document.getElementById('doctor-grid');
   if (!docs.length) {
-    grid.innerHTML = '<div class="empty"><div class="em-icon">👨‍⚕️</div><p>No hay doctores registrados</p></div>';
+    grid.innerHTML = '<div class="empty"><div class="em-icon">👨‍⚕️</div><p>NO HAY DOCTORES REGISTRADOS</p></div>';
     return;
   }
   grid.innerHTML = docs.map(d => `
     <div class="doctor-card">
       <div class="dc-head">
         <span class="dc-id">${d.id}</span>
-        <span class="${d.disponible ? 'dot-green' : 'dot-red'}">${d.disponible ? '● Disponible' : '● En turno'}</span>
+        <span class="${d.disponible ? 'dot-green' : 'dot-red'}">${d.disponible ? '● DISPONIBLE' : '● EN TURNO'}</span>
       </div>
       <div class="dc-name">Dr(a). ${d.nombre}</div>
       <div class="dc-esp">${d.especialidad}</div>
@@ -157,9 +135,7 @@ async function eliminarDoctor(id) {
   if (r.ok) loadDoctores();
 }
 
-/* ══════════════════════════════
-   REGISTRAR PACIENTE
-══════════════════════════════ */
+/* REGISTRAR UN PACIENTE */
 async function registrarPaciente() {
   const campos = {
     nombre: 'p-nombre', cedula: 'p-cedula', telefono: 'p-tel',
@@ -171,7 +147,7 @@ async function registrarPaciente() {
     data[key] = document.getElementById(id).value.trim();
   }
   if (!data.nombre || !data.cedula || !data.sexo) {
-    toast('Nombre, cédula y sexo son obligatorios.', false); return;
+    toast('NOMBRE, CÉDULA Y SEXO SON OBLIGATORIOS.', false); return;
   }
   const r = await api('/api/pacientes/registrar', data);
   toast(r.mensaje, r.ok);
@@ -183,9 +159,7 @@ function limpiarFormPaciente() {
     .forEach(id => document.getElementById(id).value = '');
 }
 
-/* ══════════════════════════════
-   TRIAGE
-══════════════════════════════ */
+/* TRIAGE */ 
 function buildTriageSelect() {
   const sel = document.getElementById('triage-tipo');
   sel.innerHTML = '<option value="">Seleccionar emergencia...</option>';
@@ -201,10 +175,10 @@ async function loadPacientesSinTriage() {
   const d   = await api('/api/pacientes');
   const sel = document.getElementById('triage-paciente');
   if (!d.registrados.length) {
-    sel.innerHTML = '<option value="">Sin pacientes pendientes de triage</option>';
+    sel.innerHTML = '<option value="">SIN PACIENTES PENDIENTES DE TRIAGE</option>';
     return;
   }
-  sel.innerHTML = '<option value="">Seleccionar paciente...</option>';
+  sel.innerHTML = '<option value="">SELECCIONAR PACIENTE...</option>';
   d.registrados.forEach(p => {
     const opt = document.createElement('option');
     opt.value       = p.cedula;
@@ -223,7 +197,7 @@ function initTriagePreview() {
     document.getElementById('triage-preview-badge').innerHTML =
       `<span class="badge ${TRIAGE_BADGE_CLASS[tipo.nivel]}">${TRIAGE_LABEL[tipo.nivel]}</span>`;
     document.getElementById('triage-preview-tiempo').textContent =
-      `Tiempo estimado de atención: ${tipo.tiempo} minutos`;
+      `TIEMPO ESTIMADO DE ATENCIÓN: ${tipo.tiempo} MINUTOS`;
   });
 }
 
@@ -242,9 +216,7 @@ async function asignarTriage() {
   }
 }
 
-/* ══════════════════════════════
-   VER PACIENTES + TABS
-══════════════════════════════ */
+/* VER LOS PACIENTES POR PESTAÑAS */
 function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'btn-primary'));
@@ -278,15 +250,13 @@ async function loadPacientesTab() {
   `).join('');
 }
 
-/* ══════════════════════════════
-   COLA
-══════════════════════════════ */
+/* COLA */
 async function loadCola() {
   const cola  = await api('/api/cola');
   const tbody = document.querySelector('#tbl-cola tbody');
   if (!cola.length) {
     tbody.innerHTML = `<tr><td colspan="7">
-      <div class="empty"><div class="em-icon">✅</div><p>Cola vacía — todos los pacientes han sido atendidos</p></div>
+      <div class="empty"><div class="em-icon">✅</div><p>COLA VACÍA — TODOS LOS PACIENTES HAN SIDO ATENDIDOS</p></div>
     </td></tr>`;
     return;
   }
@@ -331,16 +301,14 @@ async function loadColaDash() {
   `).join('');
 }
 
-/* ══════════════════════════════
-   EN ATENCIÓN
-══════════════════════════════ */
+/* EN ATENCIÓN */
 async function loadAtencion() {
   const d     = await api('/api/pacientes');
   const lista = d.en_atencion;
   const tbody = document.querySelector('#tbl-atencion tbody');
   if (!lista.length) {
     tbody.innerHTML = `<tr><td colspan="7">
-      <div class="empty"><div class="em-icon">🏥</div><p>Ningún paciente en atención actualmente</p></div>
+      <div class="empty"><div class="em-icon">🏥</div><p>NINGÚN PACIENTE EN ATENCIÓN ACTUALMENTE</p></div>
     </td></tr>`;
     return;
   }
@@ -377,9 +345,7 @@ async function loadAtencionDash() {
   `).join('');
 }
 
-/* ══════════════════════════════
-   ACCIONES TURNO
-══════════════════════════════ */
+/* ACCIONES TURNO */
 async function atenderSiguiente() {
   const r = await api('/api/turnos/atender', {});
   toast(r.mensaje, r.ok);
@@ -392,9 +358,7 @@ async function finalizarAtencion(cedula) {
   if (r.ok) { loadAtencionDash(); loadAtencion(); loadStats(); loadDoctores(); }
 }
 
-/* ══════════════════════════════
-   INICIALIZACIÓN
-══════════════════════════════ */
+/* INICIALIZACIÓN */
 document.addEventListener('DOMContentLoaded', () => {
   initLogin();
   initTriagePreview();
