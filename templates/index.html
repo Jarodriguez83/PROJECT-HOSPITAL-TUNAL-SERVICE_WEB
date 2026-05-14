@@ -3,115 +3,108 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hospital del Tunal · Urgencias</title>
+  <title>SIGU - HOSPITAL DEL TUNAL</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  <link rel="shortcut icon" href="https://w7.pngwing.com/pngs/462/783/png-transparent-star-of-life-emergency-medical-services-emergency-medical-technician-paramedic-star-of-life-angle-text-logo-thumbnail.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="cross">🏥</div>
-    <h1>Hospital del Tunal</h1>
-    <small>Sistema de Urgencias · Bogotá</small>
+    <i class="fa fa-heartbeat" style="font-size:48px;color:red; margin-bottom: 5px;" ></i>
+    <h1>SIGU </h1>
+    <h2>HOSPITAL DEL TUNAL</h2>
+    <small>SISTEMA DE URGENCIAS - BOGOTÁ</small>
   </div>
 
   <nav>
-    <div class="nav-section">General</div>
+    <div class="nav-section">GENERAL</div>
     <div class="nav-item active" onclick="goTo('dashboard', this)">
-      <span class="icon">📊</span> Dashboard
+      <span class="icon">📊</span> DASHBOARD
     </div>
 
-    <div class="nav-section">Gestión</div>
+    <div class="nav-section">GESTIÓN</div>
     <div class="nav-item" onclick="goTo('doctores', this)">
-      <span class="icon">👨‍⚕️</span> Doctores
+      <span class="icon">👨‍⚕️</span> DOCTORES
     </div>
     <div class="nav-item" onclick="goTo('registrar', this)">
-      <span class="icon">📋</span> Registrar Paciente
+      <span class="icon">📋</span> REGISTRAR PACIENTE
     </div>
     <div class="nav-item" onclick="goTo('triage', this)">
-      <span class="icon">🩺</span> Asignar Triage
+      <span class="icon">🩺</span> ASIGNAR TRIAGE
     </div>
     <div class="nav-item" onclick="goTo('pacientes', this)">
-      <span class="icon">👥</span> Ver Pacientes
+      <span class="icon">👥</span> VER PACIENTES
     </div>
 
-    <div class="nav-section">Turnos</div>
+    <div class="nav-section">TURNOS</div>
     <div class="nav-item" onclick="goTo('cola', this)">
-      <span class="icon">⏳</span> Cola de Turnos
+      <span class="icon">⏳</span> COLA DE TURNOS
     </div>
     <div class="nav-item" onclick="goTo('atencion', this)">
-      <span class="icon">🔔</span> En Atención
+      <span class="icon">🔔</span> EN ATENCIÓN
     </div>
   </nav>
 
   <div class="sidebar-footer">
-    <span class="pulse"></span> Sistema activo · 24h
+    <span class="pulse"></span> <strong>SISTEMA ACTIVO · 24/7</strong>
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════════
-     MAIN
-══════════════════════════════════════════ -->
-<div class="main">
 
-  <!-- Barra superior -->
+<div class="main">
+  <!-- BARRA SUPERIOR DE INFORMACIÓN-->
   <div class="topbar">
     <div>
-      <h2 id="topbar-title">Dashboard</h2>
-      <small id="topbar-sub">Resumen del sistema en tiempo real</small>
+      <h2 id="topbar-title">SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS</h2>
+      <small id="topbar-sub">ELABORADO POR: JHON RODRIGUEZ Y SANTIAGO NIEVES</small>
     </div>
     <div class="topbar-right">
-      <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Actualizar</button>
+      <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ ACTUALIZAR</button>
       <span id="topbar-clock" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text2)"></span>
     </div>
   </div>
 
   <div class="content">
-
-    <!-- ══════════════════════════════
-         SECCIÓN: DASHBOARD
-    ══════════════════════════════ -->
+    <!-- SECCIÓN DE INFORMACIÓN-->
     <div class="section active" id="sec-dashboard">
 
-      <!-- Tarjetas de estadísticas -->
+      <!-- TARJETAS DE DATOS -->
       <div class="stats-grid">
         <div class="stat-card c-blue">
           <div class="val" id="st-total">0</div>
-          <div class="lbl">Total Pacientes</div>
+          <div class="lbl">TOTAL DE PACIENTES</div>
         </div>
         <div class="stat-card c-orange">
           <div class="val" id="st-espera">0</div>
-          <div class="lbl">En Cola</div>
+          <div class="lbl">EN COLA</div>
         </div>
         <div class="stat-card c-red">
           <div class="val" id="st-atencion">0</div>
-          <div class="lbl">En Atención</div>
+          <div class="lbl">EN ATENCIÓN</div>
         </div>
         <div class="stat-card c-green">
           <div class="val" id="st-finalizados">0</div>
-          <div class="lbl">Finalizados</div>
+          <div class="lbl">FINALIZADOS</div>
         </div>
         <div class="stat-card c-purple">
           <div class="val" id="st-docs-disp">0</div>
-          <div class="lbl">Docs. Disponibles</div>
+          <div class="lbl">DOCS. DISPONIBLES</div>
         </div>
         <div class="stat-card c-orange">
           <div class="val" id="st-docs-turno">0</div>
-          <div class="lbl">Docs. En Turno</div>
+          <div class="lbl">DOCS. EN TURNO</div>
         </div>
       </div>
 
-      <!-- Cola rápida + en atención -->
+      <!-- COLA Y ATENCIÓN (PACIENTES) -->
       <div class="two-col">
-
         <div class="card">
           <div class="card-header">
-            <h3>⏳ Próximos en cola</h3>
-            <button class="btn btn-success btn-sm" onclick="atenderSiguiente()">▶ Atender siguiente</button>
+            <h3>⏳ PACIENTES EN COLA</h3>
+            <button class="btn btn-success btn-sm" onclick="atenderSiguiente()">▶ ATENDER AL SIGUIENTE</button>
           </div>
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
@@ -132,7 +125,7 @@
 
         <div class="card">
           <div class="card-header">
-            <h3>🩺 En atención ahora</h3>
+            <h3>🩺 PACIENTES EN ATENCIÓN</h3>
           </div>
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
@@ -151,98 +144,92 @@
           </div>
         </div>
 
-      </div><!-- /two-col -->
-    </div><!-- /sec-dashboard -->
+      </div>
+    </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: DOCTORES
-    ══════════════════════════════ -->
+    <!-- SECCIÓN: DOCTORES -->
     <div class="section" id="sec-doctores">
       <div class="two-col">
 
         <div class="card">
-          <div class="card-header"><h3>➕ Agregar Doctor</h3></div>
+          <div class="card-header"><h3>➕ AGREGAR UN DOCTOR(A)</h3></div>
           <div class="card-body">
             <div class="form-grid cols-1">
               <div class="field">
-                <label>ID Doctor</label>
-                <input id="doc-id" placeholder="Ej: MED001"/>
+                <label>ID DOCTOR(A):</label>
+                <input id="doc-id" placeholder="EJ: MED001"/>
               </div>
               <div class="field">
-                <label>Nombre Completo</label>
-                <input id="doc-nombre" placeholder="Ej: Carlos Ramírez"/>
+                <label>NOMBRE COMPLETO:</label>
+                <input id="doc-nombre" placeholder="EJ: CARLOS RAMIREZ"/>
               </div>
               <div class="field">
-                <label>Especialidad</label>
-                <input id="doc-esp" placeholder="Ej: Medicina de emergencias"/>
+                <label>ESPECIALIDAD: </label>
+                <input id="doc-esp" placeholder="EJ: MEDICINA GENERAL"/>
               </div>
             </div>
-            <div style="margin-top:14px">
-              <button class="btn btn-primary" onclick="agregarDoctor()">Agregar Doctor</button>
+            <div style="margin-top:14px; text-align: center;">
+              <button class="btn btn-primary" onclick="agregarDoctor()">AGREGAR DOCTOR</button>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>👨‍⚕️ Doctores Registrados</h3></div>
+          <div class="card-header"><h3>👨‍⚕️ LISTA DE DOCTORES REGISTRADOS</h3></div>
           <div class="card-body">
             <div class="doctor-grid" id="doctor-grid"></div>
           </div>
         </div>
 
       </div>
-    </div><!-- /sec-doctores -->
+    </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: REGISTRAR PACIENTE
-    ══════════════════════════════ -->
+    <!-- REGISTRO DE PACIENTES -->
     <div class="section" id="sec-registrar">
       <div class="card" style="max-width:720px">
-        <div class="card-header"><h3>📋 Registrar Nuevo Paciente</h3></div>
+        <div class="card-header"><h3>📋 REGISTRAR A UN NUEVO PACIENTE</h3></div>
         <div class="card-body">
           <div class="form-grid">
             <div class="field">
-              <label>Nombre Completo</label>
-              <input id="p-nombre" placeholder="Nombre y apellidos"/>
+              <label>NOMBRE COMPLETO:</label>
+              <input id="p-nombre" placeholder="NOMBRES Y APELLIDOS"/>
             </div>
             <div class="field">
-              <label>Cédula</label>
-              <input id="p-cedula" placeholder="Número de documento"/>
+              <label>CÉDULA</label>
+              <input id="p-cedula" placeholder="NO. DE DOCUMENTO"/>
             </div>
             <div class="field">
-              <label>Teléfono</label>
-              <input id="p-tel" placeholder="Celular o fijo"/>
+              <label>TELÉFONO:</label>
+              <input id="p-tel" placeholder="NO. CELULAR"/>
             </div>
             <div class="field">
-              <label>Sexo</label>
+              <label>SEXO:</label>
               <select id="p-sexo">
-                <option value="">Seleccionar...</option>
-                <option value="M">Masculino</option>
-                <option value="F">Femenino</option>
+                <option value="">SELECCIONAR...</option>
+                <option value="M">MARCULINO</option>
+                <option value="F">FEMENINO</option>
               </select>
             </div>
             <div class="field">
-              <label>EPS</label>
-              <input id="p-eps" placeholder="Nombre de la EPS"/>
+              <label>EPS:</label>
+              <input id="p-eps" placeholder="NOMBRE DE LA EPS"/>
             </div>
             <div class="field">
-              <label>Fecha de Nacimiento</label>
+              <label>FECHA DE NACIMIENTO:</label>
               <input id="p-fnac" type="date"/>
             </div>
             <div class="field span2">
-              <label>Teléfono de Emergencia</label>
-              <input id="p-telemerg" placeholder="Contacto de emergencia"/>
+              <label>TELÉFONO DE EMERGENCIA:</label>
+              <input id="p-telemerg" placeholder="CONTACTO DE EMERGENCIA"/>
             </div>
           </div>
-          <div style="margin-top:18px;display:flex;gap:10px">
-            <button class="btn btn-primary" onclick="registrarPaciente()">Registrar Paciente</button>
-            <button class="btn btn-ghost"   onclick="limpiarFormPaciente()">Limpiar</button>
+          <div style="margin-top:18px;display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="registrarPaciente()">REGISTRAR PACIENTE</button>
+            <button class="btn btn-ghost"   onclick="limpiarFormPaciente()">LIMPIAR</button>
           </div>
         </div>
       </div>
-    </div><!-- /sec-registrar -->
+    </div>
 
 
     <!-- ══════════════════════════════
