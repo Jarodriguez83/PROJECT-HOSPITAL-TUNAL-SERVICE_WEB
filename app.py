@@ -98,13 +98,19 @@ def login():
 # POST: PROCESA LOS DATOS DEL FORMULARIO DE LOGIN
 @app.route("/login", methods=["POST"])
 def login_post():
-    data     = request.get_json(silent=True) or {}
-    usuario  = data.get("usuario", "").strip()
+    data = request.get_json(silent=True) or {}
+    usuario = data.get("usuario", "").strip()
     password = data.get("password", "")
     if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDO:
         session['logged_in'] = True
-        return jsonify({"ok": True})
-    return jsonify({"ok": False, "mensaje": "USUARIO O CONTRASEÑA DE ADMINISTRADOR INCORRECTOS."})
+        return jsonify({
+            "ok": True,
+            "mensaje": "SESIÓN INICIADA EXITOSAMENTE."
+        })
+    return jsonify({
+        "ok": False,
+        "mensaje": "USUARIO O CONTRASEÑA INCORRECTOS."
+    })
 
 # RUTA PARA CERRAR SESIÓN
 @app.route("/logout")
@@ -143,12 +149,12 @@ def api_agregar_doctor():
 def api_eliminar_doctor():
     did = request.json.get("id", "").strip()
     if did not in sistema.doctores:
-        return jsonify({"ok": False, "mensaje": "Doctor no encontrado."})
+        return jsonify({"ok": False, "mensaje": "DOCTOR NO ENCONTRADO."})
     doc = sistema.doctores[did]
     if doc.estado == EstadoDoctor.EN_TURNO:
-        return jsonify({"ok": False, "mensaje": f"El doctor {doc.nombre} está en turno activo."})
+        return jsonify({"ok": False, "mensaje": f"EL DOCTOR {doc.nombre} ESTÁ EN TURNO."})
     del sistema.doctores[did]
-    return jsonify({"ok": True, "mensaje": f"Doctor {doc.nombre} eliminado."})
+    return jsonify({"ok": True, "mensaje": f"DOCTOR {doc.nombre} ELIMINADO."})
 
 # RUTA PARA VER LOS PACIENTES (ESTADO)
 @app.route("/api/pacientes")
