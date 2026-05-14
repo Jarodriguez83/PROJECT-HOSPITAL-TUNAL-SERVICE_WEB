@@ -46,6 +46,9 @@
     <div class="nav-item" onclick="goTo('atencion', this)">
       <span class="icon">🔔</span> EN ATENCIÓN
     </div>
+    <div class="nav-item" onclick="intentarLogin()" id="btn-logout">
+      <span class="icon">🚪</span> <strong> CERRAR SESIÓN </strong>
+    </div>
   </nav>
 
   <div class="sidebar-footer">
@@ -223,7 +226,7 @@
               <input id="p-telemerg" placeholder="CONTACTO DE EMERGENCIA"/>
             </div>
           </div>
-          <div style="margin-top:18px;display:flex;gap:10px;">
+          <div class="btns-register-pacient">
             <button class="btn btn-primary" onclick="registrarPaciente()">REGISTRAR PACIENTE</button>
             <button class="btn btn-ghost"   onclick="limpiarFormPaciente()">LIMPIAR</button>
           </div>
@@ -231,87 +234,78 @@
       </div>
     </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: TRIAGE
-    ══════════════════════════════ -->
+    <!-- ASIGNACIÓN DE TRIAGE -->
     <div class="section" id="sec-triage">
       <div class="two-col">
-
         <div class="card">
-          <div class="card-header"><h3>🩺 Asignar Triage</h3></div>
+          <div class="card-header"><h3>🩺 ASIGNAR TRIAGE A UN PACIENTE</h3></div>
           <div class="card-body">
             <div class="form-grid cols-1">
-
               <div class="field">
-                <label>Paciente (sin triage)</label>
+                <label>SELECCIONAR PACIENTE (SIN TRIAGE)</label>
                 <select id="triage-paciente">
-                  <option value="">Cargando...</option>
+                  <option value="">CARGANDO...</option>
                 </select>
               </div>
-
               <div class="field">
-                <label>Tipo de Emergencia</label>
+                <label>TIPO DE EMERGENCIA</label>
                 <select id="triage-tipo">
-                  <option value="">Seleccionar emergencia...</option>
+                  <option value="">SELECCIONAR EMERGENCIA...</option>
                 </select>
               </div>
-
               <div id="triage-preview" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
-                <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Vista previa</div>
+                <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">VISTA PREVIA</div>
                 <div id="triage-preview-badge" style="margin-bottom:6px"></div>
                 <div id="triage-preview-tiempo" style="font-size:12px;color:var(--text2)"></div>
               </div>
 
             </div>
             <div style="margin-top:16px">
-              <button class="btn btn-primary" onclick="asignarTriage()">Asignar Triage y Turno</button>
+              <button class="btn btn-primary" onclick="asignarTriage()">ASIGNAR TRIAGE</button>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>📖 Niveles de Triage</h3></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:10px">
-
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(248,81,73,.08);border-radius:8px;border-left:4px solid var(--t1)">
+          <div class="card-header"><h3>📖 NIVELES DE TRIAGE</h3></div>
+          <div class="card-body" >
+            <div style="display:flex;flex-direction:column;gap:10px" id="card-levels-triage">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(248,81,73,.08);border-radius:8px;border-left:4px solid var(--t1); max-width: 100%;">
                 <span style="font-size:20px">🔴</span>
                 <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE I — Resucitación</div>
-                  <div style="font-size:11px;color:var(--text2)">Atención INMEDIATA · Paro cardíaco, politrauma grave</div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE I — RESUCITACIÓN</div>
+                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN INMEDIATA · PARO CARDÍACO | POLITRAUMATISMO </div>
                 </div>
               </div>
-
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(232,145,74,.08);border-radius:8px;border-left:4px solid var(--t2)">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(232,145,74,.08);border-radius:8px;border-left:4px solid var(--t2); max-width: 100%;">
                 <span style="font-size:20px">🟠</span>
                 <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE II — Emergencia</div>
-                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 10 min · Dificultad respiratoria, ACV</div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE II — EMERGENCIA</div>
+                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 10 min · DIFICULTAD RESPIRATORIA | ACV</div>
                 </div>
               </div>
 
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(210,153,34,.08);border-radius:8px;border-left:4px solid var(--t3)">
                 <span style="font-size:20px">🟡</span>
                 <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE III — Urgente</div>
-                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 30 min · Fractura vascular, abdomen agudo</div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE III — URGENTE</div>
+                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 30 min · FRACTURA VASCULAR | ABDOMEN AGUDO</div>
                 </div>
               </div>
 
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(63,185,80,.08);border-radius:8px;border-left:4px solid var(--t4)">
                 <span style="font-size:20px">🟢</span>
                 <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE IV — Menos urgente</div>
-                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 2 horas · Fiebre, heridas leves</div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE IV — MENOS URGENTE</div>
+                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 2 horas · FIEBRE ALTA | HERIDAS CON SANGRADO</div>
                 </div>
               </div>
 
               <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(88,166,255,.08);border-radius:8px;border-left:4px solid var(--t5)">
                 <span style="font-size:20px">🔵</span>
                 <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE V — No urgente</div>
-                  <div style="font-size:11px;color:var(--text2)">Atención &lt; 4 horas · Malestar general, gripe</div>
+                  <div style="font-weight:600;font-size:13px">TRIAGE V — NO URGENTE</div>
+                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 4 horas · MALESTAR GENERAL | GRIPE</div>
                 </div>
               </div>
 
@@ -320,20 +314,15 @@
         </div>
 
       </div>
-    </div><!-- /sec-triage -->
+    </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: VER PACIENTES
-    ══════════════════════════════ -->
+    <!-- SECCIÓN: VER PACIENTES -->
     <div class="section" id="sec-pacientes">
-
-      <div style="display:flex;gap:6px;margin-bottom:18px">
-        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)">⏳ En Espera</button>
-        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('registrados', this)">📋 Registrados</button>
-        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('finalizados', this)">✅ Finalizados</button>
+      <div style="display:flex;gap:6px;margin-bottom:18px;" id="btn-view-pacients">
+        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)"> PACIENTES EN ESPERA</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('registrados', this)"> PACIENTES REGISTRADOS</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('finalizados', this)"> PACIENTES FINALIZADOS</button>
       </div>
-
       <div class="card">
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
@@ -356,17 +345,14 @@
         </div>
       </div>
 
-    </div><!-- /sec-pacientes -->
+    </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: COLA DE TURNOS
-    ══════════════════════════════ -->
+      <!-- TURNOS EN COLA-->
     <div class="section" id="sec-cola">
       <div class="card">
         <div class="card-header">
-          <h3>⏳ Cola de Turnos — orden por prioridad</h3>
-          <button class="btn btn-success btn-sm" onclick="atenderSiguiente()">▶ Atender siguiente</button>
+          <h3>COLA DE TURNOS - POR ORDEN DE PRIORIDAD</h3>
+          <button class="btn btn-success btn-sm" onclick="atenderSiguiente()">▶ ATENDER AL SIGUIENTE PACIENTE</button>
         </div>
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
@@ -387,15 +373,12 @@
           </div>
         </div>
       </div>
-    </div><!-- /sec-cola -->
+    </div>
 
-
-    <!-- ══════════════════════════════
-         SECCIÓN: EN ATENCIÓN
-    ══════════════════════════════ -->
+    <!-- PACIENTES EN ATENCIÓN -->
     <div class="section" id="sec-atencion">
       <div class="card">
-        <div class="card-header"><h3>🔔 Pacientes en Atención</h3></div>
+        <div class="card-header"><h3> PACIENTES EN ATENCIÓN - ACTUALMENTE</h3></div>
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
             <table id="tbl-atencion">
@@ -415,23 +398,21 @@
           </div>
         </div>
       </div>
-    </div><!-- /sec-atencion -->
+    </div>
+  </div>
+</div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- Toast de notificaciones -->
 <div id="toast">
   <span class="toast-icon" id="toast-icon"></span>
   <span id="toast-msg"></span>
 </div>
 
-<!-- Variable global inyectada por Flask -->
+<!-- VARIABLE GLOBAL INYECTADA POR FLASK -->
 <script>
   const TIPOS_EMERGENCIA = {{ tipos_emergencia | tojson }};
 </script>
 
-<!-- Lógica principal -->
+<!-- LÓGICA PRINCIPAL DEL PROGRAMA-->
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 </body>
