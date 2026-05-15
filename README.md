@@ -95,11 +95,11 @@ El sistema implementa los **5 NIVELES del TRIAGE de MANCHESTER**, cada uno con s
 
 | NIVEL | COLOR | CLASIFICACIÓN  | EMERGENCIAS INCLUIDAS | TIEMPO DE ESPERA |
 |:---:|:---:|---|---|:---:|
-| **I** | 🔴 ROJO | Resucitación | Paro cardiorrespiratorio, Politraumatismo grave | Inmediato |
-| **II** | 🟠 NARANJA | Emergencia | Dificultad respiratoria severa, ACV / Derrame cerebral | < 10 min |
-| **III** | 🟡 AMARILLO | Urgente | Fractura con compromiso vascular, Dolor abdominal agudo | < 30 min |
-| **IV** | 🟢 VERDE | Menos urgente | Fiebre alta con convulsión, Herida con sangrado moderado | < 2 horas |
-| **V** | 🔵 AZUL | No urgente | Dolor leve / Malestar general, Consulta menor (gripe, tos) | < 4 horas |
+| **I** | 🔴 ROJO | RESUCITACIÓN | Paro cardiorrespiratorio, Politraumatismo grave | Inmediato |
+| **II** | 🟠 NARANJA | EMERGENCIA | Dificultad respiratoria severa, ACV / Derrame cerebral | < 10 min |
+| **III** | 🟡 AMARILLO | URGENTE | Fractura con compromiso vascular, Dolor abdominal agudo | < 30 min |
+| **IV** | 🟢 VERDE | MENOS URGENTE | Fiebre alta con convulsión, Herida con sangrado moderado | < 2 horas |
+| **V** | 🔵 AZUL | NO URGENTE | Dolor leve / Malestar general, Consulta menor (gripe, tos) | < 4 horas |
 
 ---
 
@@ -108,26 +108,26 @@ El sistema implementa los **5 NIVELES del TRIAGE de MANCHESTER**, cada uno con s
 ```
 hospital/
 │
-├── app.py                      # Servidor Flask — API REST y rutas
-├── proyecto_salud.py           # Lógica de negocio (clases, algoritmo)
-├── README.md                   # Este documento
+├── app.py                      # SERVIDOR FLASK — API REST y Rutas
+├── proyecto_salud.py           # Lógica (Clases y Algoritmo)
+├── README.md                   
 │
 ├── templates/
-│   ├── login.html              # Pantalla de inicio de sesión
-│   └── index.html              # Aplicación principal (SPA)
+│   ├── login.html              # Pantalla de Inicio de Sesión (Administrador)
+│   └── index.html              # Aplicación principal (SIGU)
 │
 └── static/
     ├── css/
-    │   ├── main.css            # Estilos del sistema (variables, layout, componentes)
-    │   └── login.css           # Estilos exclusivos de la pantalla de login
+    │   ├── main.css            # Estilos del sistema (variables, componentes)
+    │   └── login.css           # Estilos de la pantalla de login
     └── js/
-        ├── app.js              # Lógica del sistema (API calls, renderizado)
+        ├── app.js              # Lógica del sistema (API, Renderizado)
         └── login.js            # Lógica del formulario de autenticación
 ```
 
 ### Descripción de archivos clave
 
-| Archivo | Responsabilidad |
+| ARCHIVO | RESPONSABILIDAD |
 |---|---|
 | `proyecto_salud.py` | Define las clases `Paciente`, `Doctor`, `SistemaUrgencias`. Contiene el algoritmo de cola, los 10 tipos de emergencia y los enums de estado. Sin dependencias externas. |
 | `app.py` | Instancia Flask, importa la lógica, expone 11 endpoints REST y gestiona la sesión del usuario. Nunca modifica `proyecto_salud.py`. |
@@ -207,18 +207,18 @@ python app.py
 http://127.0.0.1:5000
 ```
 
-El sistema redirigirá automáticamente al login.
+EL SISTEMA REDIRIGIRÁ AUTOMATICAMENTE A LA API REST DE SIGU. 
 
 ---
 
 ## 🔐 CREDENCIALES DE ACCESO
 
-| Campo | Valor |
+| CAMPO | VALOR |
 |---|---|
 | **Usuario** | `ADMINISTRADOR` |
 | **Contraseña** | `HospitalTunal` |
 
-> Las credenciales se validan en el servidor (`app.py`). Una sesión Flask protege el acceso a `/dashboard` y a todos los endpoints de la API — quien no esté autenticado es redirigido al login automáticamente.
+> Las credenciales se validan en el servidor (`app.py`). Una sesión Flask protege el acceso a `/dashboard` y a todos los endpoints de la API, quien no esté autenticado es redirigido al login automáticamente.
 
 ---
 
@@ -244,10 +244,10 @@ El flujo normal de operación sigue estos pasos:
        → El doctor queda libre para el siguiente paciente
 ```
 
-### Flujo de estados de un paciente
+### FLUJO DE ESTADOS DE UN PACIENTE 
 
 ```
-REGISTRADO  ──(triage asignado)──►  EN_ESPERA  ──(doctor disponible)──►  EN_ATENCIÓN  ──(finalizar)──►  FINALIZADO
+REGISTRADO  ──(CUANDO SE ASIGNA TRIAGE)──►  EN_ESPERA  ──(DOCTOR DISPONIBLE)──►  EN_ATENCIÓN  ──(TERMINAR ATENCIÓN)──►  FINALIZADO
 ```
 
 ---
@@ -256,24 +256,24 @@ REGISTRADO  ──(triage asignado)──►  EN_ESPERA  ──(doctor disponibl
 
 Todos los endpoints devuelven `Content-Type: application/json`.
 
-### Autenticación
+### AUTENTICACIÓN
 
-| Método | Ruta | Descripción | Body |
+| MÉTODO | RUTA | DESCRIPCIÓN | BODY |
 |---|---|---|---|
 | `GET` | `/login` | Renderiza la pantalla de login | — |
 | `POST` | `/login` | Valida credenciales y abre sesión | `{ "usuario": "...", "password": "..." }` |
 | `GET` | `/logout` | Cierra la sesión activa | — |
 | `GET` | `/dashboard` | Renderiza la aplicación principal | — |
 
-### Doctores
+### DOCTORES
 
-| Método | Ruta | Descripción | Body |
+| MÉTODO | RUTA | DESCRIPCIÓN | BODY |
 |---|---|---|---|
 | `GET` | `/api/doctores` | Lista todos los doctores | — |
 | `POST` | `/api/doctores/agregar` | Registra un nuevo doctor | `{ "id", "nombre", "especialidad" }` |
 | `POST` | `/api/doctores/eliminar` | Elimina un doctor disponible | `{ "id" }` |
 
-### Pacientes
+### PACIENTES
 
 | Método | Ruta | Descripción | Body |
 |---|---|---|---|
