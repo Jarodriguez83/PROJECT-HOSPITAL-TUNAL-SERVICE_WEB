@@ -275,15 +275,15 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 ### PACIENTES
 
-| Método | Ruta | Descripción | Body |
+| MÉTODO | RUTA | DESCRIPCIÓN | BODY |
 |---|---|---|---|
 | `GET` | `/api/pacientes` | Devuelve todos los pacientes agrupados por estado | — |
 | `POST` | `/api/pacientes/registrar` | Registra un nuevo paciente | `{ "nombre", "cedula", "telefono", "sexo", "eps", "fecha_nacimiento", "telefono_emergencia" }` |
 | `POST` | `/api/pacientes/triage` | Asigna triage y turno a un paciente registrado | `{ "cedula", "tipo_emergencia" }` |
 
-### Turnos y cola
+### TURNOS Y COLA
 
-| Método | Ruta | Descripción | Body |
+| MÉTODO | RUTA | DESCRIPCIÓN | BODY |
 |---|---|---|---|
 | `GET` | `/api/cola` | Retorna la cola ordenada con espera acumulada | — |
 | `POST` | `/api/turnos/atender` | Extrae al paciente más prioritario y lo asigna a un doctor | `{}` |
@@ -291,11 +291,11 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 ### Estadísticas
 
-| Método | Ruta | Descripción |
+| MÉTODO | RUTA | DESCRIPCIÓN |
 |---|---|---|
 | `GET` | `/api/estadisticas` | Devuelve conteos del sistema en tiempo real |
 
-#### Ejemplo de respuesta — `/api/estadisticas`
+#### EJEMPLO DE RESPUESTAS — `/api/estadisticas`
 
 ```json
 {
@@ -310,7 +310,7 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 }
 ```
 
-#### Ejemplo de respuesta — `/api/cola`
+#### EJEMPLO DE RESPUESTAS — `/api/cola`
 
 ```json
 [
@@ -339,9 +339,9 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 ## 🧩 MODELO DE DATOS
 
-### Clase `Paciente`
+### CLASE `PACIENTE`
 
-| Atributo | Tipo | Descripción |
+| ATRIBUTO | TIPO | DESCRIPCIÓN |
 |---|---|---|
 | `nombre` | `str` | Nombre completo |
 | `cedula` | `str` | Número de documento (único) |
@@ -357,9 +357,9 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 | `numero_turno` | `int` | Asignado secuencialmente al hacer triage |
 | `hora_registro` | `datetime` | Timestamp de creación |
 
-### Clase `Doctor`
+### CLASE `DOCTOR`
 
-| Atributo | Tipo | Descripción |
+| ATRIBUTO | TIPO | DESCRIPCIÓN |
 |---|---|---|
 | `doctor_id` | `str` | Identificador único (ej: `MED001`) |
 | `nombre` | `str` | Nombre completo |
@@ -373,31 +373,17 @@ Todos los endpoints devuelven `Content-Type: application/json`.
 
 La interfaz es una **Single Page Application (SPA)** que no recarga la página al navegar. Toda la comunicación con el servidor se realiza mediante `fetch()` asíncrono.
 
-**Componentes visuales:**
+**COMPONENTES VISUALES:**
 
-- **Sidebar fijo** con navegación por secciones
-- **Topbar** con título dinámico, reloj en tiempo real y botón de actualización manual
-- **Tarjetas de estadísticas** con valores en tiempo real
-- **Tablas dinámicas** con estados vacíos informativos
-- **Badges de triage** con código de color por nivel
-- **Barras de espera acumulada** en la cola de turnos
-- **Toast de notificaciones** para confirmaciones y errores
-- **Vista previa de triage** al seleccionar el tipo de emergencia
-- **Auto-refresh** cada 15 segundos en la sección activa
-
-**Paleta de colores del sistema:**
-
-| Variable | Color | Uso |
-|---|---|---|
-| `--bg` | `#0d1117` | Fondo principal |
-| `--bg2` | `#161b22` | Sidebar y tarjetas |
-| `--bg3` | `#1c2333` | Cabeceras y fondos de input |
-| `--accent2` | `#388bfd` | Elementos activos y foco |
-| `--t1` | `#f85149` | Triage I — Rojo |
-| `--t2` | `#e8914a` | Triage II — Naranja |
-| `--t3` | `#d29922` | Triage III — Amarillo |
-| `--t4` | `#3fb950` | Triage IV — Verde |
-| `--t5` | `#58a6ff` | Triage V — Azul |
+- **SIDEBAR FIJO** con navegación por secciones
+- **TOPBAR** con título dinámico, reloj en tiempo real y botón de actualización manual
+- **TARJETAS DE ESTADÍSTICAS** con valores en tiempo real
+- **TABLAS DINÁMICAS** con estados vacíos informativos
+- **BADGES DE TRIAGE** con código de color por nivel
+- **BARRAS DE ESPERA ACUMULADA** en la cola de turnos
+- **TOAST DE NOTIFICACIONES** para confirmaciones y errores
+- **VISTA PREVIA DE TRIAGE** al seleccionar el tipo de emergencia
+- **AUTO-REFRESH** cada 15 segundos en la sección activa
 
 ---
 
@@ -412,20 +398,20 @@ La interfaz es una **Single Page Application (SPA)** que no recarga la página a
 
 ## 🛠 MEJORAS FUTURAS
 
-- [ ] Persistencia de datos con base de datos (SQLAlchemy + PostgreSQL)
-- [ ] Historial de atenciones por paciente y doctor
-- [ ] Autenticación por roles (administrador, enfermera, médico)
-- [ ] Notificaciones en tiempo real con WebSockets
-- [ ] Reportes y exportación a PDF / Excel
-- [ ] Módulo de citas programadas complementario al servicio de urgencias
-- [ ] Integración con sistema de EPS para verificación automática
-- [ ] Despliegue en contenedor Docker
+- Persistencia de datos con base de datos (SQLAlchemy + PostgreSQL)
+- Historial de atenciones por paciente y doctor
+- Autenticación por roles (administrador, enfermera, médico)
+- Notificaciones en tiempo real con WebSockets
+- Reportes y exportación a PDF / Excel
+- Módulo de citas programadas complementario al servicio de urgencias
+- Integración con sistema de EPS para verificación automática
+- Despliegue en contenedor Docker
 
 ---
 
 ## 👥 AUTORES
 
-Desarrollado como proyecto académico para la asignatura de **Estructuras de Datos y Algoritmos**, aplicado al contexto hospitalario del **Hospital del Tunal**, localidad de Tunjuelito, Bogotá D.C., Colombia.
+Desarrollado como proyecto académico para la asignatura de **Análisis y Diseño de Algoritmos**, por los estudiantes **Jader Santiago Nieves Tami y Jhon Alexander Rodriguez Redondo** aplicado al contexto hospitalario del **Hospital del Tunal**, localidad de Tunjuelito, Bogotá D.C., Colombia.
 
 ---
 
@@ -434,7 +420,3 @@ Desarrollado como proyecto académico para la asignatura de **Estructuras de Dat
 Este proyecto es de uso académico e institucional. Todos los derechos reservados al equipo de desarrollo y al Hospital del Tunal.
 
 ---
-
-<div align="center">
-  <sub>🏥 Hospital del Tunal · Localidad de Tunjuelito · Bogotá, Colombia · Sistema de Urgencias 24h</sub>
-</div>
