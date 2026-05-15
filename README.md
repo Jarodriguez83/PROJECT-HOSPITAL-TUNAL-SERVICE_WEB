@@ -23,39 +23,38 @@ para el servicio de urgencias del Hospital del Tunal, Bogotá.
 
 ## 📋 DESCRIPCIÓN
 
-El **Sistema de Gestión de Urgencias** es una aplicación web diseñada para el Hospital del Tunal (nivel III, localidad de Tunjuelito), cuyo objetivo principal es **minimizar el tiempo de espera** entre la llegada del paciente y su atención por un profesional de salud, mediante la asignación óptima de turnos basada en prioridad médica.
+El **Sistema de Gestión de Urgencias** es una aplicación web diseñada para el Hospital del Tunal (Nivel III, localidad de Tunjuelito), cuyo objetivo principal es **minimizar el tiempo de espera** entre la llegada del paciente y su atención por un profesional de salud, mediante la asignación óptima de turnos basada en prioridad médica.
 
 El sistema implementa el **protocolo de Triage de Manchester** en 5 niveles de criticidad, utilizando una cola de prioridad tipo *min-heap* para garantizar que siempre sea atendido primero el paciente con mayor urgencia médica, independientemente de su hora de llegada.
 
-> **Alcance:** Solo cubre urgencias clasificadas por triage. No incluye consultas generales, citas médicas programadas ni hospitalización.
+> **ALCANCE:** Solo cubre URGENCIAS clasificadas por TRIAGE. NO INCLUYE consultas generales, citas médicas programadas ni hospitalización.
 
 ---
 
 ## ✨ FUNCIONALIDADES
 
-| Módulo | Descripción |
+| MÓDULO | DESCRIPCIÓN |
 |---|---|
-| 🔐 **Autenticación** | Pantalla de inicio de sesión con validación de credenciales contra el servidor |
-| 📊 **Dashboard** | Panel en tiempo real con estadísticas del servicio y vista rápida de cola y atención activa |
-| 👨‍⚕️ **Gestión de Doctores** | Registro, visualización y eliminación del personal médico con control de disponibilidad |
-| 📋 **Registro de Pacientes** | Ingreso completo de datos del paciente con validación de cédula única |
-| 🩺 **Asignación de Triage** | Clasificación por tipo de emergencia con vista previa del nivel y tiempo estimado |
-| 👥 **Visualización de Pacientes** | Listado filtrable por estado: en espera, registrados y finalizados |
-| ⏳ **Cola de Turnos** | Vista ordenada por prioridad con barra de espera acumulada estimada |
-| 🔔 **Atención Activa** | Control de pacientes en atención con asignación de doctor y cierre de turno |
+| 🔐 **AUTENTICACIÓN** | Pantalla de inicio de sesión con validación de credenciales contra el servidor |
+| 📊 **DASHBOARD** | Panel en tiempo real con estadísticas del servicio y vista rápida de cola y atención activa |
+| 👨‍⚕️ **GESTIÓN DE DOCTORES** | Registro, visualización y eliminación del personal médico con control de disponibilidad |
+| 📋 **REGISTRO DE PACIENTES** | Ingreso completo de datos del paciente con validación de cédula única |
+| 🩺 **ASIGNACIÓN DE TRIAGE** | Clasificación por tipo de emergencia con vista previa del nivel y tiempo estimado |
+| 👥 **VISUALIZACIÓN DE PACIENTES** | Listado filtrable por estado: en espera, registrados y finalizados |
+| ⏳ **COLA DE TURNOS** | Vista ordenada por prioridad con barra de espera acumulada estimada |
+| 🔔 **ATENCIÓN ACTIVA** | Control de pacientes en atención con asignación de doctor y cierre de turno |
 
 ---
 
 ## 🏗 ARQUITECTURA
 
-El proyecto está organizado en **tres capas independientes** que se comunican a través de una API REST:
+El proyecto está organizado en **TRES CAPAS** que se comunican a través de una API REST:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  CAPA 3 — Interfaz web (HTML · CSS · JavaScript)        │
+│  CAPA 3 — INTERFAZ WEB (HTML · CSS · JavaScript)        │
 │  login.html / index.html + main.css / login.css         │
 │  app.js / login.js                                      │
-│  Comunicación asíncrona mediante fetch() — sin recargas │
 └────────────────────────┬────────────────────────────────┘
                          │ HTTP / JSON
 ┌────────────────────────▼────────────────────────────────┐
@@ -65,23 +64,23 @@ El proyecto está organizado en **tres capas independientes** que se comunican a
 └────────────────────────┬────────────────────────────────┘
                          │ Importación directa
 ┌────────────────────────▼────────────────────────────────┐
-│  CAPA 1 — Lógica de negocio (Python puro)               │
+│  CAPA 1 — LÓGICA DE SIGU (Python puro)                  │
 │  proyecto_salud.py                                      │
 │  Clases · Algoritmo de cola · Sin dependencias web      │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Algoritmo central — Cola de Prioridad (Min-Heap)
+### ALGORITMO CENTRAL — COLA DE PRIORIDAD (MIN-HEAP)
 
 La asignación de turnos utiliza el módulo `heapq` de Python. Cada paciente es comparable mediante el método `__lt__` que evalúa la tupla `(nivel_triage, hora_registro)`:
 
-- **Menor nivel de triage** → mayor urgencia → primero en el heap.
-- A **igual nivel de triage**, se atiende al que llegó antes (`hora_registro`).
+- **MENOR NIVEL DE TRIAGE** → Mayor urgencia → Primero en el heap.
+- A **IGUAL NIVEL DE TRIAGE**, se atiende al que llegó antes (`hora_registro`).
 - Al llamar `atender_siguiente`, se extrae el paciente con `heapq.heappop()` en **O(log n)**.
 
 ```python
-# Prioridad compuesta: (nivel_triage, hora_registro)
-# Nivel 1 (Rojo) siempre sale antes que Nivel 5 (Azul)
+# PRIORIDAD: (nivel_triage, hora_registro)
+# NIVEL 1 (Rojo) siempre sale antes que NIVEL 5 (Azul)
 self._prioridad = (self.nivel_triage, self.hora_registro)
 
 def __lt__(self, other):
@@ -92,15 +91,15 @@ def __lt__(self, other):
 
 ## 🩺 CLASIFICACIÓN DE TRIAGE
 
-El sistema implementa los **5 niveles del Triage de Manchester**, cada uno con sus tipos de emergencia, tiempo de atención estimado y código de color:
+El sistema implementa los **5 NIVELES del TRIAGE de MANCHESTER**, cada uno con sus tipos de emergencia, tiempo de atención estimado y código de color:
 
-| Nivel | Color | Clasificación | Emergencias incluidas | Tiempo máx. de espera |
+| NIVEL | COLOR | CLASIFICACIÓN  | EMERGENCIAS INCLUIDAS | TIEMPO DE ESPERA |
 |:---:|:---:|---|---|:---:|
-| **I** | 🔴 Rojo | Resucitación | Paro cardiorrespiratorio, Politraumatismo grave | Inmediato |
-| **II** | 🟠 Naranja | Emergencia | Dificultad respiratoria severa, ACV / Derrame cerebral | < 10 min |
-| **III** | 🟡 Amarillo | Urgente | Fractura con compromiso vascular, Dolor abdominal agudo | < 30 min |
-| **IV** | 🟢 Verde | Menos urgente | Fiebre alta con convulsión, Herida con sangrado moderado | < 2 horas |
-| **V** | 🔵 Azul | No urgente | Dolor leve / Malestar general, Consulta menor (gripe, tos) | < 4 horas |
+| **I** | 🔴 ROJO | Resucitación | Paro cardiorrespiratorio, Politraumatismo grave | Inmediato |
+| **II** | 🟠 NARANJA | Emergencia | Dificultad respiratoria severa, ACV / Derrame cerebral | < 10 min |
+| **III** | 🟡 AMARILLO | Urgente | Fractura con compromiso vascular, Dolor abdominal agudo | < 30 min |
+| **IV** | 🟢 VERDE | Menos urgente | Fiebre alta con convulsión, Herida con sangrado moderado | < 2 horas |
+| **V** | 🔵 AZUL | No urgente | Dolor leve / Malestar general, Consulta menor (gripe, tos) | < 4 horas |
 
 ---
 
