@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 
 class EstadoPaciente(Enum):
-    REGISTRADO  = "REGISTRAD"
+    REGISTRADO  = "REGISTRADO"
     EN_ESPERA   = "EN ESPERA"
     EN_ATENCION = "EN ATENCION"
     FINALIZADO  = "FINALIZADO"
