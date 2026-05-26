@@ -8,12 +8,212 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
   <link rel="shortcut icon" href="https://w7.pngwing.com/pngs/462/783/png-transparent-star-of-life-emergency-medical-services-emergency-medical-technician-paramedic-star-of-life-angle-text-logo-thumbnail.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style>
+    /* ══ MODAL — TABLA HOSPITAL ══════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: min(92vw, 760px);
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+      transform: translateY(20px) scale(.97);
+      transition: transform .25s;
+    }
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-head {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg3);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .modal-head h3 { font-size: 15px; font-weight: 600; }
+    .modal-head .modal-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color .15s, background .15s;
+    }
+    .modal-close:hover { color: var(--red); background: rgba(248,81,73,.1); }
+    .modal-search-wrap {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .modal-search {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 9px 14px 9px 36px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 12px center;
+    }
+    .modal-search:focus { border-color: var(--accent2); }
+    .modal-body { overflow-y: auto; flex: 1; }
+    .modal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .modal-table thead th {
+      padding: 10px 16px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+    .modal-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .12s;
+    }
+    .modal-table tbody tr:hover { background: rgba(255,255,255,.04); cursor: pointer; }
+    .modal-table tbody tr.en-turno { opacity: .45; cursor: not-allowed; }
+    .modal-table tbody tr.en-turno:hover { background: transparent; }
+    .modal-table td { padding: 12px 16px; vertical-align: middle; }
+    .modal-table .doc-id-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--bg);
+      color: var(--accent2);
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+    }
+    .modal-table .esp-tag {
+      font-size: 11px;
+      color: var(--text2);
+      background: var(--bg3);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .modal-table .turno-tag {
+      font-size: 11px;
+      background: rgba(210,153,34,.15);
+      color: var(--orange);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .modal-table .add-btn {
+      background: rgba(31,111,235,.14);
+      color: var(--accent2);
+      border: 1px solid rgba(31,111,235,.3);
+      border-radius: 7px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .modal-table .add-btn:hover { background: rgba(31,111,235,.28); }
+    .modal-foot {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text2);
+      background: var(--bg3);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+    /* ── Registro paciente: cálculo edad desde fecha ── */
+    #p-edad-calc {
+      font-size: 11px;
+      color: var(--accent2);
+      margin-top: 4px;
+      min-height: 16px;
+    }
+    /* ── Tab activo mejorado ─────────────────────────── */
+    .tab-btn.active {
+      background: rgba(31,111,235,.15) !important;
+      color: var(--accent2) !important;
+      border-color: rgba(31,111,235,.4) !important;
+    }
+  </style>
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════════════════
+     MODAL: TABLA GENERAL DE DOCTORES DEL HOSPITAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-hospital" onclick="cerrarModalSiFuera(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3>🏥 TABLA GENERAL — DOCTORES DEL HOSPITAL DEL TUNAL</h3>
+        <div class="modal-sub">Seleccione los doctores que están en turno hoy. Los ya agregados aparecen bloqueados.</div>
+      </div>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-search-wrap">
+      <input class="modal-search" id="modal-buscar" placeholder="BUSCAR POR NOMBRE, ID O ESPECIALIDAD..." oninput="filtrarTablaHospital()"/>
+    </div>
+    <div class="modal-body">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NOMBRE</th>
+            <th>ESPECIALIDAD</th>
+            <th>ESTADO</th>
+            <th>ACCIÓN</th>
+          </tr>
+        </thead>
+        <tbody id="modal-tabla-body"></tbody>
+      </table>
+    </div>
+    <div class="modal-foot">
+      <span id="modal-conteo">Cargando...</span>
+      <button class="btn btn-ghost btn-sm" onclick="cerrarModal()">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <i class="fa fa-heartbeat" style="font-size:48px;color:red; margin-bottom: 5px;" ></i>
+    <i class="fa fa-heartbeat" style="font-size:48px;color:red; margin-bottom: 5px;"></i>
     <h1>SIGU </h1>
     <h2>HOSPITAL DEL TUNAL</h2>
     <small>SISTEMA DE URGENCIAS - BOGOTÁ</small>
@@ -47,7 +247,7 @@
       <span class="icon">🔔</span> EN ATENCIÓN
     </div>
     <div class="nav-item" onclick="intentarLogin()" id="btn-logout">
-      <span class="icon">🚪</span> <strong> CERRAR SESIÓN </strong>
+      <span class="icon">🚪</span> <strong>CERRAR SESIÓN</strong>
     </div>
   </nav>
 
@@ -57,8 +257,12 @@
 </aside>
 
 
+<!-- ══════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+═══════════════════════════════════════════════════════ -->
 <div class="main">
-  <!-- BARRA SUPERIOR DE INFORMACIÓN-->
+
+  <!-- BARRA SUPERIOR -->
   <div class="topbar">
     <div>
       <h2 id="topbar-title">SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS</h2>
@@ -71,10 +275,9 @@
   </div>
 
   <div class="content">
-    <!-- SECCIÓN DE INFORMACIÓN-->
-    <div class="section active" id="sec-dashboard">
 
-      <!-- TARJETAS DE DATOS -->
+    <!-- ─── DASHBOARD ──────────────────────────────────── -->
+    <div class="section active" id="sec-dashboard">
       <div class="stats-grid">
         <div class="stat-card c-blue">
           <div class="val" id="st-total">0</div>
@@ -102,7 +305,6 @@
         </div>
       </div>
 
-      <!-- COLA Y ATENCIÓN (PACIENTES) -->
       <div class="two-col">
         <div class="card">
           <div class="card-header">
@@ -112,14 +314,7 @@
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table id="tbl-cola-dash">
-                <thead>
-                  <tr>
-                    <th>Turno</th>
-                    <th>Paciente</th>
-                    <th>Triage</th>
-                    <th>Espera est.</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Turno</th><th>Paciente</th><th>Triage</th><th>Espera est.</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -133,52 +328,66 @@
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table id="tbl-atencion-dash">
-                <thead>
-                  <tr>
-                    <th>Turno</th>
-                    <th>Paciente</th>
-                    <th>Doctor</th>
-                    <th>Acción</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Turno</th><th>Paciente</th><th>Doctor</th><th>Acción</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- SECCIÓN: DOCTORES -->
+    <!-- ─── DOCTORES ───────────────────────────────────── -->
     <div class="section" id="sec-doctores">
       <div class="two-col">
 
-        <div class="card">
-          <div class="card-header"><h3>➕ AGREGAR UN DOCTOR(A)</h3></div>
-          <div class="card-body">
-            <div class="form-grid cols-1">
-              <div class="field">
-                <label>ID DOCTOR(A):</label>
-                <input id="doc-id" placeholder="EJ: MED001"/>
-              </div>
-              <div class="field">
-                <label>NOMBRE COMPLETO:</label>
-                <input id="doc-nombre" placeholder="EJ: CARLOS RAMIREZ"/>
-              </div>
-              <div class="field">
-                <label>ESPECIALIDAD: </label>
-                <input id="doc-esp" placeholder="EJ: MEDICINA GENERAL"/>
-              </div>
+        <!-- Panel izquierdo: formulario + botón tabla hospital -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+
+          <!-- BOTÓN: Agregar desde tabla del hospital -->
+          <div class="card">
+            <div class="card-header"><h3>🏥 TABLA DEL HOSPITAL</h3></div>
+            <div class="card-body" style="text-align:center; padding: 20px;">
+              <p style="font-size:13px; color:var(--text2); margin-bottom:14px; line-height:1.6;">
+                Seleccione doctores directamente desde el<br/>catálogo maestro del Hospital del Tunal.
+              </p>
+              <button class="btn btn-primary" onclick="abrirModalHospital()" style="width:100%">
+                👨‍⚕️ VER TABLA DE DOCTORES DEL HOSPITAL
+              </button>
             </div>
-            <div style="margin-top:14px; text-align: center;">
-              <button class="btn btn-primary" onclick="agregarDoctor()">AGREGAR DOCTOR</button>
+          </div>
+
+          <!-- Formulario: agregar doctor manual -->
+          <div class="card">
+            <div class="card-header"><h3>➕ AGREGAR DOCTOR NUEVO (MANUAL)</h3></div>
+            <div class="card-body">
+              <div class="form-grid cols-1">
+                <div class="field">
+                  <label>ID DOCTOR(A):</label>
+                  <input id="doc-id" placeholder="EJ: MED011"/>
+                </div>
+                <div class="field">
+                  <label>NOMBRE COMPLETO:</label>
+                  <input id="doc-nombre" placeholder="EJ: CARLOS RAMIREZ"/>
+                </div>
+                <div class="field">
+                  <label>ESPECIALIDAD:</label>
+                  <input id="doc-esp" placeholder="EJ: MEDICINA GENERAL"/>
+                </div>
+              </div>
+              <div style="margin-top:14px; text-align:center;">
+                <button class="btn btn-primary" onclick="agregarDoctor()">AGREGAR DOCTOR</button>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- Panel derecho: lista de doctores en turno -->
         <div class="card">
-          <div class="card-header"><h3>👨‍⚕️ LISTA DE DOCTORES REGISTRADOS</h3></div>
+          <div class="card-header">
+            <h3>👨‍⚕️ DOCTORES EN TURNO ACTIVO</h3>
+            <button class="btn btn-ghost btn-sm" onclick="loadDoctores()">↻</button>
+          </div>
           <div class="card-body">
             <div class="doctor-grid" id="doctor-grid"></div>
           </div>
@@ -187,7 +396,7 @@
       </div>
     </div>
 
-    <!-- REGISTRO DE PACIENTES -->
+    <!-- ─── REGISTRAR PACIENTE ─────────────────────────── -->
     <div class="section" id="sec-registrar">
       <div class="card" style="max-width:720px">
         <div class="card-header"><h3>📋 REGISTRAR A UN NUEVO PACIENTE</h3></div>
@@ -209,7 +418,7 @@
               <label>SEXO:</label>
               <select id="p-sexo">
                 <option value="">SELECCIONAR...</option>
-                <option value="M">MARCULINO</option>
+                <option value="M">MASCULINO</option>
                 <option value="F">FEMENINO</option>
               </select>
             </div>
@@ -219,7 +428,8 @@
             </div>
             <div class="field">
               <label>FECHA DE NACIMIENTO:</label>
-              <input id="p-fnac" type="date"/>
+              <input id="p-fnac" type="date" onchange="calcularEdad()"/>
+              <div id="p-edad-calc"></div>
             </div>
             <div class="field span2">
               <label>TELÉFONO DE EMERGENCIA:</label>
@@ -234,7 +444,7 @@
       </div>
     </div>
 
-    <!-- ASIGNACIÓN DE TRIAGE -->
+    <!-- ─── ASIGNAR TRIAGE ────────────────────────────── -->
     <div class="section" id="sec-triage">
       <div class="two-col">
         <div class="card">
@@ -243,22 +453,17 @@
             <div class="form-grid cols-1">
               <div class="field">
                 <label>SELECCIONAR PACIENTE (SIN TRIAGE)</label>
-                <select id="triage-paciente">
-                  <option value="">CARGANDO...</option>
-                </select>
+                <select id="triage-paciente"><option value="">CARGANDO...</option></select>
               </div>
               <div class="field">
                 <label>TIPO DE EMERGENCIA</label>
-                <select id="triage-tipo">
-                  <option value="">SELECCIONAR EMERGENCIA...</option>
-                </select>
+                <select id="triage-tipo"><option value="">SELECCIONAR EMERGENCIA...</option></select>
               </div>
               <div id="triage-preview" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
                 <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">VISTA PREVIA</div>
                 <div id="triage-preview-badge" style="margin-bottom:6px"></div>
                 <div id="triage-preview-tiempo" style="font-size:12px;color:var(--text2)"></div>
               </div>
-
             </div>
             <div style="margin-top:16px">
               <button class="btn btn-primary" onclick="asignarTriage()">ASIGNAR TRIAGE</button>
@@ -268,60 +473,45 @@
 
         <div class="card">
           <div class="card-header"><h3>📖 NIVELES DE TRIAGE</h3></div>
-          <div class="card-body" >
+          <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:10px" id="card-levels-triage">
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(248,81,73,.08);border-radius:8px;border-left:4px solid var(--t1); max-width: 100%;">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(248,81,73,.08);border-radius:8px;border-left:4px solid var(--t1);">
                 <span style="font-size:20px">🔴</span>
-                <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE I — RESUCITACIÓN</div>
-                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN INMEDIATA · PARO CARDÍACO | POLITRAUMATISMO </div>
-                </div>
+                <div><div style="font-weight:600;font-size:13px">TRIAGE I — RESUCITACIÓN</div>
+                <div style="font-size:11px;color:var(--text2)">ATENCIÓN INMEDIATA · PARO CARDÍACO | POLITRAUMATISMO</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(232,145,74,.08);border-radius:8px;border-left:4px solid var(--t2); max-width: 100%;">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(232,145,74,.08);border-radius:8px;border-left:4px solid var(--t2);">
                 <span style="font-size:20px">🟠</span>
-                <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE II — EMERGENCIA</div>
-                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 10 min · DIFICULTAD RESPIRATORIA | ACV</div>
-                </div>
+                <div><div style="font-weight:600;font-size:13px">TRIAGE II — EMERGENCIA</div>
+                <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 10 min · DIFICULTAD RESPIRATORIA | ACV</div></div>
               </div>
-
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(210,153,34,.08);border-radius:8px;border-left:4px solid var(--t3)">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(210,153,34,.08);border-radius:8px;border-left:4px solid var(--t3);">
                 <span style="font-size:20px">🟡</span>
-                <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE III — URGENTE</div>
-                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 30 min · FRACTURA VASCULAR | ABDOMEN AGUDO</div>
-                </div>
+                <div><div style="font-weight:600;font-size:13px">TRIAGE III — URGENTE</div>
+                <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 30 min · FRACTURA VASCULAR | ABDOMEN AGUDO</div></div>
               </div>
-
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(63,185,80,.08);border-radius:8px;border-left:4px solid var(--t4)">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(63,185,80,.08);border-radius:8px;border-left:4px solid var(--t4);">
                 <span style="font-size:20px">🟢</span>
-                <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE IV — MENOS URGENTE</div>
-                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 2 horas · FIEBRE ALTA | HERIDAS CON SANGRADO</div>
-                </div>
+                <div><div style="font-weight:600;font-size:13px">TRIAGE IV — MENOS URGENTE</div>
+                <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 2 horas · FIEBRE ALTA | HERIDAS CON SANGRADO</div></div>
               </div>
-
-              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(88,166,255,.08);border-radius:8px;border-left:4px solid var(--t5)">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:rgba(88,166,255,.08);border-radius:8px;border-left:4px solid var(--t5);">
                 <span style="font-size:20px">🔵</span>
-                <div>
-                  <div style="font-weight:600;font-size:13px">TRIAGE V — NO URGENTE</div>
-                  <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 4 horas · MALESTAR GENERAL | GRIPE</div>
-                </div>
+                <div><div style="font-weight:600;font-size:13px">TRIAGE V — NO URGENTE</div>
+                <div style="font-size:11px;color:var(--text2)">ATENCIÓN &lt; 4 horas · MALESTAR GENERAL | GRIPE</div></div>
               </div>
-
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- SECCIÓN: VER PACIENTES -->
+    <!-- ─── VER PACIENTES ──────────────────────────────── -->
     <div class="section" id="sec-pacientes">
       <div style="display:flex;gap:6px;margin-bottom:18px;" id="btn-view-pacients">
-        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)"> PACIENTES EN ESPERA</button>
-        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('registrados', this)"> PACIENTES REGISTRADOS</button>
-        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('finalizados', this)"> PACIENTES FINALIZADOS</button>
+        <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)">PACIENTES EN ESPERA</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('registrados', this)">PACIENTES REGISTRADOS</button>
+        <button class="btn btn-ghost btn-sm tab-btn"        onclick="switchTab('finalizados', this)">PACIENTES FINALIZADOS</button>
       </div>
       <div class="card">
         <div class="card-body" style="padding:0">
@@ -329,14 +519,8 @@
             <table id="tbl-pacientes">
               <thead>
                 <tr>
-                  <th>Turno</th>
-                  <th>Nombre</th>
-                  <th>Cédula</th>
-                  <th>EPS</th>
-                  <th>Triage</th>
-                  <th>Emergencia</th>
-                  <th>Hora</th>
-                  <th>Estado</th>
+                  <th>Turno</th><th>Nombre</th><th>Cédula</th><th>EPS</th>
+                  <th>Triage</th><th>Emergencia</th><th>Hora</th><th>Estado</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -344,14 +528,13 @@
           </div>
         </div>
       </div>
-
     </div>
 
-      <!-- TURNOS EN COLA-->
+    <!-- ─── COLA DE TURNOS ─────────────────────────────── -->
     <div class="section" id="sec-cola">
       <div class="card">
         <div class="card-header">
-          <h3>COLA DE TURNOS - POR ORDEN DE PRIORIDAD</h3>
+          <h3>COLA DE TURNOS — POR ORDEN DE PRIORIDAD</h3>
           <button class="btn btn-success btn-sm" onclick="atenderSiguiente()">▶ ATENDER AL SIGUIENTE PACIENTE</button>
         </div>
         <div class="card-body" style="padding:0">
@@ -359,13 +542,8 @@
             <table id="tbl-cola">
               <thead>
                 <tr>
-                  <th>Pos.</th>
-                  <th>Turno</th>
-                  <th>Nombre</th>
-                  <th>Emergencia</th>
-                  <th>Triage</th>
-                  <th>T. atención</th>
-                  <th>Espera acum.</th>
+                  <th>Pos.</th><th>Turno</th><th>Nombre</th><th>Emergencia</th>
+                  <th>Triage</th><th>T. atención</th><th>Espera acum.</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -375,22 +553,17 @@
       </div>
     </div>
 
-    <!-- PACIENTES EN ATENCIÓN -->
+    <!-- ─── EN ATENCIÓN ────────────────────────────────── -->
     <div class="section" id="sec-atencion">
       <div class="card">
-        <div class="card-header"><h3> PACIENTES EN ATENCIÓN - ACTUALMENTE</h3></div>
+        <div class="card-header"><h3>PACIENTES EN ATENCIÓN — ACTUALMENTE</h3></div>
         <div class="card-body" style="padding:0">
           <div class="table-wrap">
             <table id="tbl-atencion">
               <thead>
                 <tr>
-                  <th>Turno</th>
-                  <th>Paciente</th>
-                  <th>Emergencia</th>
-                  <th>Triage</th>
-                  <th>Doctor</th>
-                  <th>T. est.</th>
-                  <th>Finalizar</th>
+                  <th>Turno</th><th>Paciente</th><th>Emergencia</th>
+                  <th>Triage</th><th>Doctor</th><th>T. est.</th><th>Finalizar</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -399,9 +572,11 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- TOAST -->
 <div id="toast">
   <span class="toast-icon" id="toast-icon"></span>
   <span id="toast-msg"></span>
@@ -410,10 +585,109 @@
 <!-- VARIABLE GLOBAL INYECTADA POR FLASK -->
 <script>
   const TIPOS_EMERGENCIA = {{ tipos_emergencia | tojson }};
+  const TABLA_HOSPITAL   = {{ tabla_hospital   | tojson }};
 </script>
 
-<!-- LÓGICA PRINCIPAL DEL PROGRAMA-->
+<!-- LÓGICA PRINCIPAL -->
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+<!-- LÓGICA DEL MODAL DE DOCTORES DEL HOSPITAL -->
+<script>
+  /* ══ MODAL: TABLA DE DOCTORES DEL HOSPITAL ══════════════════ */
+
+  let _tablaHospitalCache = [];
+
+  async function abrirModalHospital() {
+    document.getElementById('modal-hospital').classList.add('open');
+    document.getElementById('modal-buscar').value = '';
+    await cargarTablaHospital();
+  }
+
+  function cerrarModal() {
+    document.getElementById('modal-hospital').classList.remove('open');
+  }
+
+  function cerrarModalSiFuera(e) {
+    if (e.target === document.getElementById('modal-hospital')) cerrarModal();
+  }
+
+  async function cargarTablaHospital() {
+    try {
+      const data = await api('/api/doctores/tabla');
+      _tablaHospitalCache = data;
+      renderTablaHospital(data);
+    } catch {
+      toast('Error al cargar la tabla del hospital.', false);
+    }
+  }
+
+  function renderTablaHospital(lista) {
+    const tbody = document.getElementById('modal-tabla-body');
+    const conteo = document.getElementById('modal-conteo');
+
+    if (!lista.length) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text2)">Sin resultados</td></tr>`;
+      conteo.textContent = '0 doctores';
+      return;
+    }
+
+    tbody.innerHTML = lista.map(doc => `
+      <tr class="${doc.en_turno ? 'en-turno' : ''}" ${!doc.en_turno ? `onclick="agregarDoctorDesdeTabla('${doc.id}')"` : ''}>
+        <td><span class="doc-id-badge">${doc.id}</span></td>
+        <td><strong style="font-size:13px">Dr(a). ${doc.nombre}</strong></td>
+        <td><span class="esp-tag">${doc.especialidad}</span></td>
+        <td>
+          ${doc.en_turno
+            ? '<span class="turno-tag">● EN TURNO</span>'
+            : '<span style="font-size:11px;color:var(--green)">● DISPONIBLE</span>'}
+        </td>
+        <td>
+          ${doc.en_turno
+            ? '<span style="font-size:11px;color:var(--text2)">YA AGREGADO</span>'
+            : `<button class="add-btn" onclick="event.stopPropagation(); agregarDoctorDesdeTabla('${doc.id}')">+ AGREGAR AL TURNO</button>`}
+        </td>
+      </tr>
+    `).join('');
+
+    const disp = lista.filter(d => !d.en_turno).length;
+    conteo.textContent = `${lista.length} doctores en el hospital · ${disp} disponibles`;
+  }
+
+  function filtrarTablaHospital() {
+    const q = document.getElementById('modal-buscar').value.toLowerCase().trim();
+    if (!q) { renderTablaHospital(_tablaHospitalCache); return; }
+    const filtrado = _tablaHospitalCache.filter(d =>
+      d.id.toLowerCase().includes(q) ||
+      d.nombre.toLowerCase().includes(q) ||
+      d.especialidad.toLowerCase().includes(q)
+    );
+    renderTablaHospital(filtrado);
+  }
+
+  async function agregarDoctorDesdeTabla(docId) {
+    const r = await api('/api/doctores/agregar', { id: docId });
+    toast(r.mensaje, r.ok);
+    if (r.ok) {
+      await cargarTablaHospital();   // refresca estado "en turno" en el modal
+      loadDoctores();                // refresca la lista del panel derecho
+    }
+  }
+
+  /* ══ CALCULAR EDAD DESDE FECHA ══════════════════════════════ */
+  function calcularEdad() {
+    const fnac = document.getElementById('p-fnac').value;
+    const div  = document.getElementById('p-edad-calc');
+    if (!fnac) { div.textContent = ''; return; }
+    const hoy = new Date();
+    const nac = new Date(fnac);
+    let edad  = hoy.getFullYear() - nac.getFullYear();
+    const m   = hoy.getMonth() - nac.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+    if (edad < 0 || edad > 120) { div.textContent = '⚠ Fecha inválida'; div.style.color = 'var(--red)'; return; }
+    div.style.color = 'var(--accent2)';
+    div.textContent = `→ Edad calculada: ${edad} años`;
+  }
+</script>
 
 </body>
 </html>
