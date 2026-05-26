@@ -25,7 +25,7 @@ sistema = SistemaUrgencias()
 TRIAGE_BADGE = {
     1: {"color": "#e53e3e", "label": "T1 · ROJO",     "tiempo": "Inmediato"},
     2: {"color": "#dd6b20", "label": "T2 · NARANJA",  "tiempo": "< 10 min"},
-    3: {"color": "#d69e2e", "label": "T3 · AMARILLO", "tiempo": "< 30 min"},
+    3: {"color": "#d69e2", "label": "T3 · AMARILLO", "tiempo": "< 30 min"},
     4: {"color": "#38a169", "label": "T4 · VERDE",    "tiempo": "< 2 h"},
     5: {"color": "#3182ce", "label": "T5 · AZUL",     "tiempo": "< 4 h"},
 }
