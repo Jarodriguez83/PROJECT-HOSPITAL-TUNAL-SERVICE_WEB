@@ -1,11 +1,11 @@
 """
-Generador de simulación de horas pico – Hospital del Tunal
-Crea un .xlsx completo con:
-  Hoja 1 – PACIENTES_SIMULACION   : 60 pacientes con todos sus datos
-  Hoja 2 – COLA_PRIORIDAD         : orden de atención resultante del heap
-  Hoja 3 – DASHBOARD_GENERAL      : estadísticas globales y distribuciones
-  Hoja 4 – DASHBOARD_POR_TRIAGE   : resumen por nivel de triage
-  Hoja 5 – DASHBOARD_HORAS_PICO   : distribución temporal de llegadas
+GENERADOR DE SIMULACIÓN DE HORAS PICO – HOSPITAL DEL TUNAL
+CREA UN .xlsx COMPLETO CON:
+  HOJA 1 – PACIENTES_SIMULACION   : 60 Pacientes con todos sus datos
+  HOJA 2 – COLA_PRIORIDAD         : Orden de atención resultante del heap
+  HOJA 3 – DASHBOARD_GENERAL      : Estadísticas globales y distribuciones
+  HOJA 4 – DASHBOARD_POR_TRIAGE   : Resumen por nivel de triage
+  HOJA 5 – DASHBOARD_HORAS_PICO   : Distribución temporal de llegadas
 """
 
 import heapq
@@ -20,11 +20,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.chart import BarChart, PieChart, Reference
 from openpyxl.chart.series import DataPoint
 
-random.seed(42)
-
-# ─────────────────────────────────────────────────────────────
 # DATOS DE REFERENCIA  (espejo exacto de proyecto_salud.py)
-# ─────────────────────────────────────────────────────────────
 
 TIPOS_EMERGENCIA = {
     "Paro cardiorrespiratorio":         (1, 60),
@@ -89,8 +85,11 @@ DOCTORES = {
     "MED004": ("Sofía Torres",       "Neurología"),
     "MED005": ("Felipe Herrera",     "Traumatología"),
 }
+# HORAS PICO 
+# MAÑANA: 7 - 10 
+# TARDE: 12 - 15
+# NOCHE: 18 - 21
 
-# Horas pico: mañana 7-10h, tarde 12-15h, noche 18-21h
 HORAS_PICO = [
     (7, 10, 25),    # mañana: 25 % de pacientes
     (10, 12, 10),   # media mañana
@@ -99,9 +98,7 @@ HORAS_PICO = [
     (18, 21, 15),   # noche
 ]
 
-# ─────────────────────────────────────────────────────────────
 # HELPERS DE GENERACIÓN
-# ─────────────────────────────────────────────────────────────
 
 def hora_aleatoria():
     """Genera datetime de hoy en una franja de hora pico."""
@@ -219,8 +216,8 @@ def generar_pacientes(n=60):
 def calcular_cola_prioridad(pacientes):
     """Simula la cola min-heap exactamente como en proyecto_salud.py."""
     heap = []
-    for p in pacientes:
-        clave = (p["nivel_triage"], p["peso_edad"], p["hora_registro"])
+    for i, p in enumerate(pacientes):
+        clave = (p["nivel_triage"], p["peso_edad"], p["hora_registro"], i)  # i rompe empates
         heapq.heappush(heap, (clave, p))
 
     cola = []
@@ -233,10 +230,7 @@ def calcular_cola_prioridad(pacientes):
         pos += 1
     return cola
 
-# ─────────────────────────────────────────────────────────────
 # ESTILOS REUTILIZABLES
-# ─────────────────────────────────────────────────────────────
-
 def fill(hex_color):
     return PatternFill("solid", fgColor=hex_color)
 
@@ -281,10 +275,7 @@ def set_col_widths(ws, widths):
     for col_idx, w in enumerate(widths, 1):
         ws.column_dimensions[get_column_letter(col_idx)].width = w
 
-# ─────────────────────────────────────────────────────────────
 # HOJA 1 — PACIENTES_SIMULACION
-# ─────────────────────────────────────────────────────────────
-
 def hoja_pacientes(wb, pacientes):
     ws = wb.active
     ws.title = "PACIENTES_SIMULACION"
@@ -333,10 +324,7 @@ def hoja_pacientes(wb, pacientes):
     ws.row_dimensions[1].height = 28
     ws.row_dimensions[2].height = 18
 
-# ─────────────────────────────────────────────────────────────
 # HOJA 2 — COLA_PRIORIDAD
-# ─────────────────────────────────────────────────────────────
-
 def hoja_cola(wb, cola):
     ws = wb.create_sheet("COLA_PRIORIDAD")
     ws.sheet_view.showGridLines = False
@@ -373,10 +361,7 @@ def hoja_cola(wb, cola):
 
     set_col_widths(ws, [10, 9, 26, 14, 36, 6, 14, 15, 16, 24])
 
-# ─────────────────────────────────────────────────────────────
 # HOJA 3 — DASHBOARD GENERAL
-# ─────────────────────────────────────────────────────────────
-
 def hoja_dashboard_general(wb, pacientes, cola):
     ws = wb.create_sheet("DASHBOARD_GENERAL")
     ws.sheet_view.showGridLines = False
@@ -505,10 +490,7 @@ def hoja_dashboard_general(wb, pacientes, cola):
     ws.add_chart(bar, "E30")
 
 
-# ─────────────────────────────────────────────────────────────
 # HOJA 4 — DASHBOARD POR PACIENTE
-# ─────────────────────────────────────────────────────────────
-
 def hoja_dashboard_paciente(wb, cola):
     ws = wb.create_sheet("DASHBOARD_POR_PACIENTE")
     ws.sheet_view.showGridLines = False
@@ -552,11 +534,7 @@ def hoja_dashboard_paciente(wb, cola):
 
     set_col_widths(ws, [10, 9, 26, 14, 34, 6, 14, 10, 14, 15, 12, 24])
 
-
-# ─────────────────────────────────────────────────────────────
 # HOJA 5 — DASHBOARD HORAS PICO
-# ─────────────────────────────────────────────────────────────
-
 def hoja_horas_pico(wb, pacientes):
     ws = wb.create_sheet("DASHBOARD_HORAS_PICO")
     ws.sheet_view.showGridLines = False
@@ -649,40 +627,98 @@ def hoja_horas_pico(wb, pacientes):
 
     set_col_widths(ws, [22, 8, 10, 12, 13, 11, 10, 10])
 
-
-# ─────────────────────────────────────────────────────────────
 # MAIN
-# ─────────────────────────────────────────────────────────────
-
 def main():
-    print("Generando datos de simulación…")
-    pacientes = generar_pacientes(60)
+    import sys
+
+    # ── Leer argumentos de la terminal ───────────────────────
+    # Uso: python3 generar_simulacion.py [N_PACIENTES] [SEED]
+    #   N_PACIENTES : entero > 0           (default: 60)
+    #   SEED        : entero >= 0 ó "0"    (default: 42)
+    #                 Si SEED == 0 → semilla aleatoria distinta cada vez
+
+    n_pacientes = 60
+    seed_valor  = 42
+
+    if len(sys.argv) >= 2:
+        try:
+            n_pacientes = int(sys.argv[1])
+            if n_pacientes < 1:
+                raise ValueError
+        except ValueError:
+            print("⚠  El primer argumento debe ser un entero positivo (N° de pacientes).")
+            print("   Ejemplo: python3 generar_simulacion.py 100 42")
+            sys.exit(1)
+
+    if len(sys.argv) >= 3:
+        try:
+            seed_valor = int(sys.argv[2])
+            if seed_valor < 0:
+                raise ValueError
+        except ValueError:
+            print("⚠  El segundo argumento debe ser un entero >= 0 (seed).")
+            print("   Usa 0 para una semilla aleatoria distinta cada vez.")
+            sys.exit(1)
+
+    # Seed 0 → aleatorio real (distinto en cada ejecución)
+    if seed_valor == 0:
+        import time
+        seed_valor = int(time.time()) % 100_000
+        print(f"  Semilla aleatoria generada automáticamente: {seed_valor}")
+
+    random.seed(seed_valor)
+
+    sep = "─" * 53
+    print(f"\n{sep}")
+    print(f"SIMULACIÓN — HOSPITAL DEL TUNAL")
+    print(f"{sep}")
+    print(f"  Pacientes   : {n_pacientes}")
+    print(f"  Seed        : {seed_valor}")
+    print(f"{sep}")
+
+    print("GENERANDO LOS DATOS DE SIMULACIÓN...")
+    pacientes = generar_pacientes(n_pacientes)
     cola      = calcular_cola_prioridad(pacientes)
 
     wb = Workbook()
-
     hoja_pacientes(wb, pacientes)
     hoja_cola(wb, cola)
     hoja_dashboard_general(wb, pacientes, cola)
     hoja_dashboard_paciente(wb, cola)
     hoja_horas_pico(wb, pacientes)
 
-    out = "/mnt/user-data/outputs/simulacion_horas_pico_hospital.xlsx"
+    # Nombre de archivo incluye parámetros para identificar cada test
+    nombre_archivo = f"simulacion_p{n_pacientes}_s{seed_valor}.xlsx"
+    import os
+    os.makedirs("outputs", exist_ok=True)
+    out = f"outputs/{nombre_archivo}"
     wb.save(out)
-    print(f"✔ Archivo guardado: {out}")
 
-    # Resumen en consola
-    conteos = {n: sum(1 for p in pacientes if p["nivel_triage"] == n) for n in [1,2,3,4,5]}
-    prom_espera = round(sum(p["espera_estimada"] for p in pacientes)/len(pacientes), 1)
-    prom_total  = round(sum(p["tiempo_total"]    for p in pacientes)/len(pacientes), 1)
-    print("\n── Resumen de la simulación ─────────────────────────")
-    print(f"  Total pacientes : {len(pacientes)}")
+    # ── Resumen en consola ───────────────────────────────────
+    conteos     = {n: sum(1 for p in pacientes if p["nivel_triage"] == n) for n in [1,2,3,4,5]}
+    prom_espera = round(sum(p["espera_estimada"] for p in pacientes) / len(pacientes), 1)
+    prom_total  = round(sum(p["tiempo_total"]    for p in pacientes) / len(pacientes), 1)
+    max_espera  = max(p["espera_estimada"] for p in pacientes)
+    max_total   = max(p["tiempo_total"]    for p in pacientes)
+
+    print(f"\n  ── Distribución de triage ──────────────────────")
     for n, c in conteos.items():
-        print(f"  {TRIAGE_LABEL[n]:<18}: {c} pacientes")
-    print(f"  Espera prom.    : {prom_espera} min")
-    print(f"  T. total prom.  : {prom_total} min")
-    print(f"  T. espera máx.  : {max(p['espera_estimada'] for p in pacientes)} min")
-    print("─────────────────────────────────────────────────────")
+        barra = "█" * c + "░" * max(0, 20 - c)
+        pct   = round(c / len(pacientes) * 100, 1)
+        print(f"  {TRIAGE_LABEL[n]:<18} {barra}  {c:>3} pac  ({pct}%)")
+
+    print(f"\n  ── Métricas de tiempo ──────────────────────────")
+    print(f"  Espera prom.  : {prom_espera:>6} min")
+    print(f"  T. total prom.: {prom_total:>6} min")
+    print(f"  Espera máx.   : {max_espera:>6} min")
+    print(f"  T. total máx. : {max_total:>6} min")
+
+    print(f"\n  ── Cola de prioridad (primeros 5) ──────────────")
+    for p in cola[:5]:
+        print(f"  #{p['posicion_cola']:>2}  {p['nombre']:<28}  {p['triage_label']}")
+
+    print(f"\n ✔ ARCHIVO GUARDADO: {nombre_archivo}")
+    print(f"{sep}\n")
 
 if __name__ == "__main__":
     main()
