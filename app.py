@@ -36,9 +36,6 @@ DESCANSO_MAP = {
     "descanso": TipoDescanso.DESCANSO,
 }
 
-
-# ── Helpers ────────────────────────────────────────────────────
-
 def doctor_a_dict(doc: Doctor) -> dict:
     return {
         "id":                doc.doctor_id,
@@ -79,9 +76,7 @@ def paciente_a_dict(p: Paciente) -> dict:
         "minutos_total_real":   p.minutos_total_real,
     }
 
-
-# ── Página principal ───────────────────────────────────────────
-
+# PÁGINA PRINCIPAL
 @app.route("/")
 def index():
     tipos = [
@@ -102,8 +97,7 @@ def index():
                            tabla_hospital=tabla_hospital)
 
 
-# ── API: Doctores ──────────────────────────────────────────────
-
+# DOCTORES 
 @app.route("/api/doctores")
 def api_doctores():
     return jsonify([doctor_a_dict(d) for d in sistema.doctores.values()])
@@ -189,8 +183,7 @@ def api_descanso():
     return jsonify({"ok": False, "mensaje": "Acción no reconocida."})
 
 
-# ── API: Pacientes ─────────────────────────────────────────────
-
+# PACIENTES
 @app.route("/api/pacientes")
 def api_pacientes():
     result = {"registrados": [], "en_espera": [], "en_atencion": [], "finalizados": []}
@@ -253,8 +246,7 @@ def api_triage():
     return jsonify({"ok": False, "mensaje": "Paciente no encontrado o ya tiene triage."})
 
 
-# ── API: Cola y turnos ─────────────────────────────────────────
-
+# COLA Y TURNOS
 @app.route("/api/cola")
 def api_cola():
     copia = sorted(sistema.cola_prioridad)
@@ -317,8 +309,7 @@ def api_finalizar():
     return jsonify({"ok": False, "mensaje": "Paciente no encontrado en atención."})
 
 
-# ── API: Estadísticas ──────────────────────────────────────────
-
+# ESTADÍSTICAS  
 @app.route("/api/estadisticas")
 def api_estadisticas():
     total       = len(sistema.pacientes)
@@ -347,7 +338,7 @@ def api_estadisticas():
 
 if __name__ == "__main__":
     print("\n" + "═"*55)
-    print("  🏥  HOSPITAL DEL TUNAL — Sistema de Urgencias")
-    print("  Abre tu navegador en → http://127.0.0.1:5000")
+    print("  HOSPITAL DEL TUNAL — SIGU (SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS)")
+    print("  ABRIR EN EL NAVEGADOR: → http://127.0.0.1:5000")
     print("═"*55 + "\n")
     app.run(debug=True, port=5000)
