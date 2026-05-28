@@ -399,13 +399,31 @@ class SistemaUrgencias:
     def registrar_paciente(self):
         titulo("REGISTRAR PACIENTE")
         nombre   = input("  NOMBRE COMPLETO        : ").strip()
-        cedula   = input("  CÉDULA                 : ").strip()
+        try:
+            cedula   = input("  CÉDULA                 : ").strip()
+            if len(cedula) < 8 or len(cedula) > 10: 
+                raise ValueError
+        except ValueError:
+            print(" CÉDULA INVÁLIDA. DEBE TENER ENTRE 8 Y 10 DÍGITOS.")
+            return
         for p in self.pacientes:
             if p.cedula == cedula:
                 print("  YA EXISTE UN PACIENTE CON ESA CÉDULA.")
                 return
-        telefono = input("  TELÉFONO               : ").strip()
-        sexo     = input("  SEXO BIOLÓGICO (M/F)   : ").strip().upper()
+        try:
+            telefono = input("  TELÉFONO               : ").strip()
+            if len(telefono) < 10 or len(telefono) > 10:
+                raise ValueError
+        except ValueError:
+            print(" TELÉFONO INVÁLIDO. DEBE TENER 10 DÍGITOS.")
+            return
+        try:
+            sexo     = input("  SEXO BIOLÓGICO (M/F)   : ").strip().upper()
+            if sexo != "M" and sexo != "F":
+                raise ValueError
+        except ValueError:
+            print(" SEXO INVÁLIDO. DEBE SER 'M' O 'F'.")
+            return
         try:
             edad = int(input("  EDAD (AÑOS)        : ").strip())
             if edad < 0 or edad > 120:
@@ -414,13 +432,18 @@ class SistemaUrgencias:
             print(" EDAD INVÁLIDA.")
             return
         fnac     = input("  FECHA DE NACIMIENTO    : ").strip()
-        tel_emer = input("  TELÉFONO DE EMERGENCIA : ").strip()
-
+        try:
+            tel_emer = input("  TELÉFONO DE EMERGENCIA : ").strip()
+            if len(tel_emer) < 10 or len(tel_emer) > 10:
+                raise ValueError
+        except ValueError:
+            print(" TELÉFONO DE EMERGENCIA INVÁLIDO. DEBE TENER 10 DÍGITOS.")
+            return
         pac = Paciente(nombre, cedula, telefono, sexo, edad, fnac, tel_emer)
         self.pacientes.append(pac)
         print(f"\n  ✔ EL PACIENTE {nombre} ({edad} AÑOS) HA SIDO REGISTRADO — "
               f"{self._grupo_edad(edad)}.")
-        print("  → REALIZAR EL TRIAGE PARA ASIGNAR EL TURNO.")
+        print(" ( NOTA: REALIZAR EL TRIAGE PARA ASIGNAR EL TURNO. )")
 
     @staticmethod
     def _grupo_edad(edad: int) -> str:
@@ -719,7 +742,7 @@ def main():
     print("╚" + "═"*60 + "╝")
     print(f"\n  Fecha y hora: {datetime.now().strftime('%Y-%m-%d  %H:%M:%S')}")
 
-    # ── Selección de doctores en turno desde la tabla del hospital ──
+    # SELECCIÓN DE LOS DOCTORES - TABLA DE LOS DOCTORES
     print("\n" + "─"*62)
     print("  INICIO DE TURNO — SELECCIONE A LOS DOCTORES")
     print("─"*62)
@@ -735,7 +758,6 @@ def main():
     if not sistema.doctores:
         print("\n  NO SE REGISTRARON DOCTORES | AGREGUELOS DESDE EL MENÚ.")
 
-    # ── Menú principal ──────────────────────────────────────────────
     while True:
         titulo("MENÚ PRINCIPAL")
         print(f"  🕐 {datetime.now().strftime('%H:%M:%S')}  |  "
