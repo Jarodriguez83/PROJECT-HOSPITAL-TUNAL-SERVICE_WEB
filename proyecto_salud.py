@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║         SISTEMA DE GESTIÓN DE URGENCIAS                      ║
+║            SISTEMA DE GESTIÓN DE URGENCIAS                   ║
 ║         HOSPITAL DEL TUNAL - BOGOTÁ, COLOMBIA                ║
 ║                         SIGU                                 ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -42,16 +42,16 @@ class TipoDescanso(Enum):
 
 #  TABLA GENERAL DE DOCTORES DEL HOSPITAL
 TABLA_DOCTORES_HOSPITAL = {
-    "MED001": {"nombre": "Carlos Ramírez",     "especialidad": "Medicina de Emergencias"},
-    "MED002": {"nombre": "Laura Gómez",        "especialidad": "Cirugía General"},
-    "MED003": {"nombre": "Andrés Martínez",    "especialidad": "Cardiología"},
-    "MED004": {"nombre": "Sofía Torres",       "especialidad": "Neurología"},
-    "MED005": {"nombre": "Felipe Herrera",     "especialidad": "Traumatología"},
-    "MED006": {"nombre": "Valentina Ríos",     "especialidad": "Pediatría"},
-    "MED007": {"nombre": "Jorge Medina",       "especialidad": "Medicina Interna"},
-    "MED008": {"nombre": "Camila Vargas",      "especialidad": "Anestesiología"},
-    "MED009": {"nombre": "Sebastián Pardo",    "especialidad": "Medicina de Emergencias"},
-    "MED010": {"nombre": "Natalia Ospina",     "especialidad": "Ginecología"},
+    "MED001": {"nombre": "CARLOS RAMIREZ",     "especialidad": "MEDICINA DE EMERGENCIAS"},
+    "MED002": {"nombre": "LAURA GÓMEZ",        "especialidad": "CIRUGÍA GENERAL"},
+    "MED003": {"nombre": "ANDRÉS MARTÍNEZ",    "especialidad": "CARDIOLOGÍA"},
+    "MED004": {"nombre": "SOFÍA TORRES",       "especialidad": "NEUROLOGÍA"},
+    "MED005": {"nombre": "FELIPE HERRERA",     "especialidad": "TRAUMATOLOGÍA"},
+    "MED006": {"nombre": "VALENTINA RÍOS",     "especialidad": "PEDIATRÍA"},
+    "MED007": {"nombre": "JORGE MEDINA",       "especialidad": "MEDICINA INTERNA"},
+    "MED008": {"nombre": "CAMILA VARGAS",      "especialidad": "ANESTESIOLOGÍA"},
+    "MED009": {"nombre": "SEBASTIAN PARDO",    "especialidad": "MEDICINA DE EMERGENCIAS"},
+    "MED010": {"nombre": "NATALIA OSPINA",     "especialidad": "GINECOLOGÍA"},
 }
 
 #  TIPOS DE EMERGENCIA

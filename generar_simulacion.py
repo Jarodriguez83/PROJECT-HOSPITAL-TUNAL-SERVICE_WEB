@@ -159,7 +159,7 @@ def generar_pacientes(n=60):
             if cedula not in cedulaset:
                 cedulaset.add(cedula)
                 break
-
+        # TODO: CATEGORIZACIÓN DE LAS EDADES PARA DAR MÁS PESO A LOS EXTREMOS (NEONATOS, ANCIANOS) EN EL TRIAGE
         edad = random.choices(
             range(0, 91),
             weights=[
