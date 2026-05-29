@@ -17,7 +17,6 @@ class EstadoPaciente(Enum):
     EN_ATENCION = "EN ATENCIÓN"
     FINALIZADO  = "FINALIZADO"
 
-
 class EstadoDoctor(Enum):
     DISPONIBLE  = "DISPONIBLE"
     EN_TURNO    = "EN TURNO"
@@ -38,7 +37,6 @@ class TipoDescanso(Enum):
             return 60
         elif self == TipoDescanso.DESCANSO:
             return 30
-
 
 #  TABLA GENERAL DE DOCTORES DEL HOSPITAL
 TABLA_DOCTORES_HOSPITAL = {
