@@ -169,17 +169,14 @@ class Paciente:
         self.estado              = EstadoPaciente.REGISTRADO
         self.hora_registro       = datetime.now()
 
-        # Datos de triage
         self.tipo_emergencia  = None
         self.nivel_triage     = None
         self.tiempo_atencion  = None   # minutos estimados de atención
         self.numero_turno     = None
 
-        # Tiempos reales
         self.hora_inicio_atencion: datetime | None = None
         self.hora_fin_atencion:    datetime | None = None
 
-        # Para el heap de prioridad
         self._prioridad = None
 
     # TODO: PRIORIDAD COMPUESTA
@@ -787,7 +784,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# RÚBRICA: 
-# EN QUE ME BASE PARA LAS DISTRIBUCIONES  
-# QUE MEJORAS TUVIMOS 
-# VARIABLES
