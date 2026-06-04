@@ -2,12 +2,6 @@
 # EJECUTAR EN: http://127.0.0.1:5000
 # app.py -> IMPLEMENTACIÓN DE LA CAPA FLASK
 # INICIAR CON: python app.py
-"""
-app.py  –  Capa Flask del Sistema de Urgencias
-Importa la lógica desde proyecto_salud.py sin modificarla.
-Ejecutar:  python app.py   → abrir http://127.0.0.1:5000
-"""
-
 import heapq
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
@@ -96,16 +90,13 @@ def index():
                            tipos_emergencia=tipos,
                            tabla_hospital=tabla_hospital)
 
-
 # DOCTORES 
 @app.route("/api/doctores")
 def api_doctores():
     return jsonify([doctor_a_dict(d) for d in sistema.doctores.values()])
 
-
 @app.route("/api/doctores/tabla")
 def api_tabla_hospital():
-    """Devuelve la tabla maestra de todos los doctores del hospital."""
     en_turno = set(sistema.doctores.keys())
     tabla = [
         {
@@ -118,7 +109,6 @@ def api_tabla_hospital():
     ]
     return jsonify(tabla)
 
-
 @app.route("/api/doctores/agregar", methods=["POST"])
 def api_agregar_doctor():
     d   = request.json
@@ -129,7 +119,6 @@ def api_agregar_doctor():
     if did in sistema.doctores:
         return jsonify({"ok": False, "mensaje": "Este doctor ya está en el turno activo."})
 
-    # Si viene de la tabla del hospital (sin nombre/esp), buscamos ahí
     if not nom and did in TABLA_DOCTORES_HOSPITAL:
         nom = TABLA_DOCTORES_HOSPITAL[did]["nombre"]
         esp = TABLA_DOCTORES_HOSPITAL[did]["especialidad"]
@@ -143,7 +132,6 @@ def api_agregar_doctor():
 
     return jsonify({"ok": True, "mensaje": f"Dr(a). {nom} agregado al turno."})
 
-
 @app.route("/api/doctores/eliminar", methods=["POST"])
 def api_eliminar_doctor():
     did = request.json.get("id", "").strip()
@@ -154,7 +142,6 @@ def api_eliminar_doctor():
         return jsonify({"ok": False, "mensaje": f"{doc.nombre} está en turno activo."})
     del sistema.doctores[did]
     return jsonify({"ok": True, "mensaje": f"Dr(a). {doc.nombre} retirado del turno."})
-
 
 @app.route("/api/doctores/descanso", methods=["POST"])
 def api_descanso():
@@ -182,7 +169,6 @@ def api_descanso():
 
     return jsonify({"ok": False, "mensaje": "Acción no reconocida."})
 
-
 # PACIENTES
 @app.route("/api/pacientes")
 def api_pacientes():
@@ -198,7 +184,6 @@ def api_pacientes():
         else:
             result["finalizados"].append(pd)
     return jsonify(result)
-
 
 @app.route("/api/pacientes/registrar", methods=["POST"])
 def api_registrar_paciente():
