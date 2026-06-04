@@ -11,7 +11,6 @@ const TRIAGE_LABEL = {
 
 let currentTab = 'en_espera';
 
-/* ══ NAVEGACIÓN ══════════════════════════════════════════════ */
 const SECTION_TITLES = {
   dashboard: ['SISTEMA INTELIGENTE DE GESTIÓN DE URGENCIAS',         'RESUMEN DEL SISTEMA EN TIEMPO REAL'],
   doctores:  ['SECCIÓN: DOCTORES',          'GESTIÓN DEL PERSONAL MÉDICO Y SU DISPONIBILIDAD'],
@@ -48,13 +47,11 @@ function refreshAll() {
   refreshSection(active.id.replace('sec-', ''));
 }
 
-/* ══ RELOJ ═══════════════════════════════════════════════════ */
 function updateClock() {
   document.getElementById('topbar-clock').textContent =
     new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-/* ══ TOAST ═══════════════════════════════════════════════════ */
 let _toastTimer;
 function toast(msg, ok = true) {
   const el = document.getElementById('toast');
@@ -65,7 +62,6 @@ function toast(msg, ok = true) {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-/* ══ API ══════════════════════════════════════════════════════ */
 async function api(url, body = null) {
   const opts = body
     ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
@@ -74,7 +70,6 @@ async function api(url, body = null) {
   return r.json();
 }
 
-/* ══ ESTADÍSTICAS ════════════════════════════════════════════ */
 async function loadStats() {
   const d = await api('/api/estadisticas');
   document.getElementById('st-total').textContent       = d.total;
@@ -85,7 +80,6 @@ async function loadStats() {
   document.getElementById('st-docs-turno').textContent  = d.docs_turno;
 }
 
-/* ══ DOCTORES ════════════════════════════════════════════════ */
 async function loadDoctores() {
   const docs = await api('/api/doctores');
   const grid = document.getElementById('doctor-grid');
@@ -139,7 +133,6 @@ async function eliminarDoctor(id) {
   if (r.ok) loadDoctores();
 }
 
-/* ══ REGISTRAR PACIENTE ══════════════════════════════════════ */
 async function registrarPaciente() {
   const nombre              = document.getElementById('p-nombre').value.trim();
   const cedula              = document.getElementById('p-cedula').value.trim();
@@ -153,7 +146,6 @@ async function registrarPaciente() {
     toast('NOMBRE, CÉDULA Y SEXO SON OBLIGATORIOS.', false); return;
   }
 
-  // Calcular edad desde fecha de nacimiento
   let edad = 0;
   if (fecha_nacimiento) {
     const hoy = new Date();
@@ -177,7 +169,6 @@ function limpiarFormPaciente() {
   document.getElementById('p-edad-calc').textContent = '';
 }
 
-/* ══ TRIAGE ══════════════════════════════════════════════════ */
 function buildTriageSelect() {
   const sel = document.getElementById('triage-tipo');
   sel.innerHTML = '<option value="">SELECCIONAR EMERGENCIA...</option>';
@@ -234,7 +225,6 @@ async function asignarTriage() {
   }
 }
 
-/* ══ VER PACIENTES POR PESTAÑA ═══════════════════════════════ */
 function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'btn-primary'));
@@ -268,7 +258,6 @@ async function loadPacientesTab() {
   `).join('');
 }
 
-/* ══ COLA ════════════════════════════════════════════════════ */
 async function loadCola() {
   const cola  = await api('/api/cola');
   const tbody = document.querySelector('#tbl-cola tbody');
@@ -319,7 +308,6 @@ async function loadColaDash() {
   `).join('');
 }
 
-/* ══ EN ATENCIÓN ═════════════════════════════════════════════ */
 async function loadAtencion() {
   const d     = await api('/api/pacientes');
   const lista = d.en_atencion;
@@ -363,7 +351,6 @@ async function loadAtencionDash() {
   `).join('');
 }
 
-/* ══ ACCIONES TURNO ══════════════════════════════════════════ */
 async function atenderSiguiente() {
   const r = await api('/api/turnos/atender', {});
   toast(r.mensaje, r.ok);
@@ -376,7 +363,6 @@ async function finalizarAtencion(cedula) {
   if (r.ok) { loadAtencionDash(); loadAtencion(); loadStats(); loadDoctores(); }
 }
 
-/* ══ INICIALIZACIÓN ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   initTriagePreview();
   buildTriageSelect();
@@ -386,14 +372,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateClock();
   setInterval(updateClock, 1000);
 
-  // Auto-refresh cada 15 s
   setInterval(() => {
     const active = document.querySelector('.section.active');
     if (active) refreshSection(active.id.replace('sec-', ''));
   }, 15000);
 });
 
-/* ══ CERRAR SESIÓN ═══════════════════════════════════════════ */
 document.getElementById('btn-logout').addEventListener('click', () => {
   window.location.href = '/logout';
 });
