@@ -55,7 +55,6 @@
   display: block;
 }
 
-/* CONFIGURACIÓN CSS: FORMULARIO*/
 .login-right {
   flex: 1;
   display: flex;
@@ -180,7 +179,6 @@
   line-height: 1.6;
 }
 
-/* ── Animaciones ── */
 @keyframes shake {
   0%,100% { transform: translateX(0); }
   20%     { transform: translateX(-8px); }
@@ -200,7 +198,6 @@
   animation: fadeOut .45s ease forwards;
 }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
   #login-overlay { flex-direction: column; }
   .login-left {
