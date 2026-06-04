@@ -1,7 +1,7 @@
 """
 GENERADOR DE SIMULACIÓN DE HORAS PICO – HOSPITAL DEL TUNAL
 CREA UN .xlsx COMPLETO CON:
-  HOJA 1 – PACIENTES_SIMULACION   : 60 Pacientes con todos sus datos
+  HOJA 1 – PACIENTES_SIMULACION   : N° Pacientes con todos sus datos
   HOJA 2 – COLA_PRIORIDAD         : Orden de atención resultante del heap
   HOJA 3 – DASHBOARD_GENERAL      : Estadísticas globales y distribuciones
   HOJA 4 – DASHBOARD_POR_TRIAGE   : Resumen por nivel de triage
@@ -20,8 +20,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.chart import BarChart, PieChart, Reference
 from openpyxl.chart.series import DataPoint
 
-# DATOS DE REFERENCIA  (espejo exacto de proyecto_salud.py)
-
+# DATOS DE REFERENCIA 
 TIPOS_EMERGENCIA = {
     "PARO CARDIORESPIESTARIO":         (1, 60),
     "POLITRAUMATISMO GRAVE":            (1, 90),
@@ -368,7 +367,6 @@ def hoja_dashboard_general(wb, pacientes, cola):
         "DASHBOARD GENERAL — SIMULACIÓN HORAS PICO URGENCIAS", size=13)
 
     row = 3
-    # KPIs globales
     header_style(ws, row, (1, 5), "KPIs GLOBALES", fg="1A3A5C")
     header_style(ws, row, (6, 10), "DISTRIBUCIÓN POR TRIAGE", fg="1A3A5C")
     row += 1
@@ -624,13 +622,6 @@ def hoja_horas_pico(wb, pacientes):
 # MAIN
 def main():
     import sys
-
-    # LECTURA DE LOS ARGUMENTOS DE LA TERMINAL
-    # Uso: python3 generar_simulacion.py [N_PACIENTES] [SEED]
-    #   N_PACIENTES : entero > 0           (default: 60)
-    #   SEED        : entero >= 0 ó "0"    (default: 42)
-    #                 Si SEED == 0 → semilla aleatoria distinta cada vez
-
     n_pacientes = 60
     seed_valor  = 42
 
@@ -681,7 +672,6 @@ def main():
     hoja_dashboard_paciente(wb, cola)
     hoja_horas_pico(wb, pacientes)
 
-    # Nombre de archivo incluye parámetros para identificar cada test
     nombre_archivo = f"SIMUL_PACIENTES{n_pacientes}_SEED{seed_valor}.xlsx"
     import os
     os.makedirs("outputs", exist_ok=True)
