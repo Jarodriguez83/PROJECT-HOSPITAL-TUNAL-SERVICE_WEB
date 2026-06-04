@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <style>
-    /* ══ MODAL — TABLA HOSPITAL ══════════════════════════════════ */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -155,14 +154,12 @@
       background: var(--bg3);
       border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     }
-    /* ── Registro paciente: cálculo edad desde fecha ── */
     #p-edad-calc {
       font-size: 11px;
       color: var(--accent2);
       margin-top: 4px;
       min-height: 16px;
     }
-    /* ── Tab activo mejorado ─────────────────────────── */
     .tab-btn.active {
       background: rgba(31,111,235,.15) !important;
       color: var(--accent2) !important;
@@ -172,9 +169,7 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════
-     MODAL: TABLA GENERAL DE DOCTORES DEL HOSPITAL
-═══════════════════════════════════════════════════════ -->
+
 <div class="modal-overlay" id="modal-hospital" onclick="cerrarModalSiFuera(event)">
   <div class="modal-box">
     <div class="modal-head">
@@ -208,9 +203,7 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     SIDEBAR
-═══════════════════════════════════════════════════════ -->
+
 <aside class="sidebar">
   <div class="sidebar-logo">
     <i class="fa fa-heartbeat" style="font-size:48px;color:red; margin-bottom: 5px;"></i>
@@ -257,9 +250,6 @@
 </aside>
 
 
-<!-- ══════════════════════════════════════════════════════
-     CONTENIDO PRINCIPAL
-═══════════════════════════════════════════════════════ -->
 <div class="main">
 
   <!-- BARRA SUPERIOR -->
@@ -276,7 +266,6 @@
 
   <div class="content">
 
-    <!-- ─── DASHBOARD ──────────────────────────────────── -->
     <div class="section active" id="sec-dashboard">
       <div class="stats-grid">
         <div class="stat-card c-blue">
@@ -337,7 +326,6 @@
       </div>
     </div>
 
-    <!-- ─── DOCTORES ───────────────────────────────────── -->
     <div class="section" id="sec-doctores">
       <div class="two-col">
 
@@ -381,8 +369,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Panel derecho: lista de doctores en turno -->
         <div class="card">
           <div class="card-header">
             <h3>👨‍⚕️ DOCTORES EN TURNO ACTIVO</h3>
@@ -395,8 +381,6 @@
 
       </div>
     </div>
-
-    <!-- ─── REGISTRAR PACIENTE ─────────────────────────── -->
     <div class="section" id="sec-registrar">
       <div class="card" style="max-width:720px">
         <div class="card-header"><h3>📋 REGISTRAR A UN NUEVO PACIENTE</h3></div>
@@ -444,7 +428,6 @@
       </div>
     </div>
 
-    <!-- ─── ASIGNAR TRIAGE ────────────────────────────── -->
     <div class="section" id="sec-triage">
       <div class="two-col">
         <div class="card">
@@ -506,7 +489,6 @@
       </div>
     </div>
 
-    <!-- ─── VER PACIENTES ──────────────────────────────── -->
     <div class="section" id="sec-pacientes">
       <div style="display:flex;gap:6px;margin-bottom:18px;" id="btn-view-pacients">
         <button class="btn btn-ghost btn-sm tab-btn active" onclick="switchTab('en_espera', this)">PACIENTES EN ESPERA</button>
@@ -530,7 +512,6 @@
       </div>
     </div>
 
-    <!-- ─── COLA DE TURNOS ─────────────────────────────── -->
     <div class="section" id="sec-cola">
       <div class="card">
         <div class="card-header">
@@ -553,7 +534,6 @@
       </div>
     </div>
 
-    <!-- ─── EN ATENCIÓN ────────────────────────────────── -->
     <div class="section" id="sec-atencion">
       <div class="card">
         <div class="card-header"><h3>PACIENTES EN ATENCIÓN — ACTUALMENTE</h3></div>
@@ -573,27 +553,22 @@
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+  </div>
+</div>
 
-<!-- TOAST -->
 <div id="toast">
   <span class="toast-icon" id="toast-icon"></span>
   <span id="toast-msg"></span>
 </div>
 
-<!-- VARIABLE GLOBAL INYECTADA POR FLASK -->
 <script>
   const TIPOS_EMERGENCIA = {{ tipos_emergencia | tojson }};
   const TABLA_HOSPITAL   = {{ tabla_hospital   | tojson }};
 </script>
 
-<!-- LÓGICA PRINCIPAL -->
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
-<!-- LÓGICA DEL MODAL DE DOCTORES DEL HOSPITAL -->
 <script>
-  /* ══ MODAL: TABLA DE DOCTORES DEL HOSPITAL ══════════════════ */
 
   let _tablaHospitalCache = [];
 
@@ -673,7 +648,6 @@
     }
   }
 
-  /* ══ CALCULAR EDAD DESDE FECHA ══════════════════════════════ */
   function calcularEdad() {
     const fnac = document.getElementById('p-fnac').value;
     const div  = document.getElementById('p-edad-calc');
